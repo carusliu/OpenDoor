@@ -27,7 +27,6 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/tv_reg_name"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginLeft="30dp"
@@ -40,7 +39,7 @@
             android:textStyle="italic" />
 
         <EditText
-            android:id="@+id/et_reg_pass"
+            android:id="@+id/et_reg_pwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
@@ -52,7 +51,6 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/tv_reg_pass"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginLeft="30dp"
@@ -65,7 +63,7 @@
             android:textStyle="italic" />
 
         <EditText
-            android:id="@+id/et_reg_pass_confirm"
+            android:id="@+id/et_reg_pwd_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"

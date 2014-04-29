@@ -158,6 +158,9 @@ public class MainActivity extends HWActivity implements OnClickListener {
 					e.printStackTrace();
 				}
 				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inPreferredConfig = Bitmap.Config.RGB_565;   
+				options.inPurgeable = true;  
+				options.inInputShareable = true;  
 				options.inSampleSize = 2;
 				Bitmap bitmap = BitmapFactory.decodeStream(imageStream,null,options);
 				prize.setSmallPic(bitmap);
@@ -171,8 +174,8 @@ public class MainActivity extends HWActivity implements OnClickListener {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
 			progressDialog = new ProgressDialog(MainActivity.this);
-			progressDialog.setTitle("读取联系人");
-			progressDialog.setMessage("正在读取通讯录，请稍后。。。");
+			progressDialog.setTitle("加载奖品信息");
+			progressDialog.setMessage("正在加载奖品信息，请稍后...");
 			//progressDialog.setProgressStyle(progressDialog.)
 			progressDialog.show();
 		}

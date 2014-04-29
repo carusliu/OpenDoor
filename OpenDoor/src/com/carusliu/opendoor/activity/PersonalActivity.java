@@ -1,7 +1,10 @@
 package com.carusliu.opendoor.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,14 +25,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carusliu.opendoor.R;
 import com.carusliu.opendoor.application.AppApplication;
 import com.carusliu.opendoor.modle.Prize;
+import com.carusliu.opendoor.network.NBRequest;
+import com.carusliu.opendoor.sysconstants.SysConstants;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
 
-public class PersonalActivity extends Activity implements OnClickListener, OnItemClickListener{
+public class PersonalActivity extends HWActivity implements OnClickListener, OnItemClickListener{
 	private TextView leftText, title, rightText;
 	private List<Prize> prizeList = new ArrayList<Prize>();
 	private ListView awardlist;
@@ -84,13 +90,32 @@ public class PersonalActivity extends Activity implements OnClickListener, OnIte
 		//加载我的奖品列表
 	}
     
+    public void getUserInfoRequest(){
+    	HashMap<String, String> data = new HashMap<String, String>();
+    	String userId = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID,
+				"0");
+    	data.put(SysConstants.USER_ID, userId);
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.sendRequest(m_handler, SysConstants.USER_INFO_URL, data,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+    }
     
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.user_info, menu);
-        return true;
-    }
+	public void parseResponse(NBRequest request) {
+		// TODO Auto-generated method stub
+    	System.out.println(request.getCode());
+    	if(request.getCode().equals(SysConstants.ZERO)){
+	    	JSONObject jsonObject = request.getBodyJSONObject();
+	    	System.out.println(jsonObject.toString());
+	    	SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
+	        /*Intent intent = new Intent();
+	        intent.setClass(Login.this,MainActivity.class);
+	        startActivity(intent);*/
+	    	
+	        Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
+	        finish();
+    	}
+	}
     
     @Override
 	public void onClick(View v) {

@@ -79,6 +79,7 @@ public class Login extends HWActivity implements OnClickListener{
 	        finish();
     	}
 	}
+    
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub

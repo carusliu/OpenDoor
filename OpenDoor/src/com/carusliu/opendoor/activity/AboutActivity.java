@@ -47,7 +47,7 @@ public class AboutActivity extends Activity {
 		setting.setSupportZoom(false);
 		setting.setAllowFileAccess(true);
 		//setting.setBlockNetworkImage(true);
-		wv_about.loadUrl(SysConstants.about_url);
+		wv_about.loadUrl(SysConstants.ABOUT_URL);
 
 	}
 
