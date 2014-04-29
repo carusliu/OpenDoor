@@ -54,6 +54,20 @@ public class Login extends HWActivity implements OnClickListener{
     public void loginRequest(){
     	String userName  = etName.getText().toString().trim();
     	String userPwd  = etPwd.getText().toString().trim();
+    	
+    	if(userName.equals("")){
+			Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(!userName.toString().matches("^([\\w+\\.]\\w+@[\\w+\\.]+\\w+|1[3568]\\d{9})$")){
+			Toast.makeText(this, "用户名必须为邮箱或手机号", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(userPwd.equals("")){
+			Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show();
+			return;
+		}
+    	
     	HashMap<String, String> data = new HashMap<String, String>();
 		data.put(SysConstants.USER_ID, userName);
 		data.put(SysConstants.PASSWORD, MD5Util.md5(userPwd));

@@ -4,8 +4,12 @@ package com.carusliu.opendoor.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -18,11 +22,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.carusliu.opendoor.R;
 import com.carusliu.opendoor.activity.ShakeListener.OnShakeListener;
-import com.carusliu.opendoor.application.AppApplication;
 
 
 public class ShakeActivity extends Activity{
@@ -187,4 +189,20 @@ public class ShakeActivity extends Activity{
                 }).create(); // 创建对话框
         alertDialog.show(); // 显示对话框
     }
+	
+	public Location getLocation(){
+		LocationManager loctionManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);//高精度
+		criteria.setAltitudeRequired(false);//不要求海拔
+		criteria.setBearingRequired(false);//不要求方位
+		criteria.setCostAllowed(true);//允许有花费
+		criteria.setPowerRequirement(Criteria.POWER_LOW);//低功耗
+		//从可用的位置提供器中，匹配以上标准的最佳提供器
+		String provider = loctionManager.getBestProvider(criteria, true);
+		Location location  = loctionManager.getLastKnownLocation(provider);
+		
+		return location;
+	}
 }

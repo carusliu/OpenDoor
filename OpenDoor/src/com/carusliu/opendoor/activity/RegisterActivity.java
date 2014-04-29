@@ -57,7 +57,31 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
     	String confirmPwd  = etPwd.getText().toString().trim();
     	
     	//检查输入参数
-    	
+    	if("".equals(userName)){
+			Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(!userName.matches("^([\\w+\\.]\\w+@[\\w+\\.]+\\w+|1[3568]\\d{9})$")){
+			Toast.makeText(this, "用户名必须为邮箱或手机号", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(userPwd.equals("")){
+			Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(userPwd.length() < 6 || userPwd.length() > 16){
+			Toast.makeText(this, "密码为长度6-16位字符", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(confirmPwd.equals("")){
+			Toast.makeText(this, "请确认密码", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(!confirmPwd.equals(userPwd)){
+			Toast.makeText(this, "两次密码不一致", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
     	HashMap<String, String> data = new HashMap<String, String>();
 		data.put(SysConstants.USER_ID, userName);
 		data.put(SysConstants.PASSWORD, MD5Util.md5(userPwd));
