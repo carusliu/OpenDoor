@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#eee" >
+
+    <include
+        android:id="@+id/exchange_titlebar"
+        layout="@layout/carguard_activity_top" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/exchange_titlebar" >
+
+        <WebView
+            android:id="@+id/wv_exchange_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="75dp" />
+
+        <Button
+            android:id="@+id/btn_promote_rate"
+            android:layout_width="245dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="15dp"
+            android:background="#FF5500"
+            android:text="@string/exchange_promote_rate"
+            android:textColor="#FFFFFF"
+            android:textSize="23sp" />
+    </FrameLayout>
+
+</RelativeLayout>

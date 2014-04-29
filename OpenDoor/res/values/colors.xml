@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <color name="window_bg">#ffeef1f3</color>
+    <color name="qqblue">#ff54acea</color>
+    
+    <color name="RoyalBlue">#4169E1</color>
+    <color name="LightSteelBlue">#B0C4DE</color>
+    <color name="blue_text_color">#6683A7</color>
+    <color name="blue_dark_text_color">#084783</color>
+    
+    <color name="blue">#0000FF</color>
+    <color name="com_btn_blue">#5a9adc</color>
+    <color name="widgetBgColor">#20000000</color>
+    <color name="widgetFontColor">#13aaf1</color>
+    <color name="tempCColor">#fdb814</color>
+    <color name="zoneTempColor">#a9a7a6</color>
+    <color name="whiteColor">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="green">#00ff00</color>
+    <color name="app_background">#e6e6e6</color>
+    <color name="grey">#999999</color>
+	<color name="transparentdlg">#00000000</color>
+	<color name="skyblue">#2E8B57</color>
+	<color name="cyan">#01d5fb</color>
+	<color name="red">#c51616</color>
+    <color name="lightgreen">#00FFFF</color>
+	<color name="lightgray">#D3D3D3</color>
+	<color name="linelight">#363636</color>
+	<color name="line">#A0A0A0</color>
+	<color name="point">#E0EBED</color>
+	<color name="chart_text">#A5AEAE</color>
+	<color name="blue_point">#04D6FC</color>
+	<!-- curcube -->
+	<color name="transparent">#00000000</color>
+	<color name="main_tabbt_selected">#13171B</color>
+	<color name="main_tabbt_string_normal">#999999</color>
+	<color name="hint_blue">#FF5500</color>
+    <color name="white">#ffffff</color>
+    <color name="search_hint">#ffcccccc</color>
+    <color name="set_lint">#DDDDDD</color>
+    <color name="text_color_about_af">#AFAFAF</color>
+    <color name="text_color_about_d7">#D7D7D7</color>
+</resources>

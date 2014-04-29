@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:background="@color/white"
+    tools:context=".RechargeActivity" >
+<include 
+    android:id="@+id/titlebar"
+    layout="@layout/carguard_activity_top"/>
+        <FrameLayout
+        android:layout_below="@id/titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        
+       <EditText
+           android:id="@+id/et_prepaid_balance"
+           android:layout_height="wrap_content"
+           android:layout_width="match_parent"
+           android:layout_gravity="left"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="30dp"
+           android:layout_marginRight="30dp"
+           android:inputType="numberDecimal" />
+        
+       <TextView
+           android:id="@+id/prepaid_balance_tip"
+           android:layout_height="40dp"
+           android:layout_width="match_parent"
+           android:gravity="left|center_vertical"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="30dp"
+           android:layout_marginRight="30dp"
+           android:paddingLeft="10dp"
+           android:text="@string/prepaid_balance_tip"
+           android:textColor="#999999"
+           android:textStyle="italic" />
+
+        <Button
+            android:id="@+id/btn_immediately_pay"
+            android:layout_width="230dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="100dp"
+            android:layout_gravity="center_horizontal"
+            android:background="#FF5500"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:text="@string/immediately_pay" />
+       
+    </FrameLayout>
+
+</RelativeLayout>

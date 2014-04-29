@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">芝麻开门</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">芝麻开门</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="ok">OK</string>
+    <string name="netLoading">通信中…</string>
+    <string name="networkError">网络错误。</string>
+    <string name="networkUnavailable">网络不可用，请连接网络。</string>
+    <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="splash_loading_text">正在加载&#8230;</string>
+    <string name="home_about">  关于</string>
+    <string name="home_login">登录   </string>
+    <string name="home_mine">我  </string>
+    <string name="home_today_prize">今日大奖</string>
+    <string name="immediately_try">立即试试手气</string>
+    <string name="home_more_prize">>>热门奖品</string>
+    <string name="login_title">登录</string>
+    <string name="login_back_home">＜返回</string>
+    <string name="login_goto_register">注册＞</string>
+    <string name="login_tip_1_text">帐号登录</string>
+    <string name="login_tip_checkbox_text">记住密码</string>
+    <string name="login_button_text">登  录</string>
+    <string name="login_input_tip_username">帐号: 手机号/邮箱</string>
+    <string name="login_input_tip_password">密码: 长度为6&#8211;16个字符</string>
+    <string name="empty_description"></string>
+    <string name="shake_title">摇一摇</string>
+    <string name="shake_back_home">＜返回</string>
+    <string name="shake_setting">设置  </string>
+    <string name="exchange_title">中奖啦</string>
+    <string name="exchange_promote_rate">花两毛钱换换手气</string>
+    <string name="exchange_back_home">＜返回</string>
+    <string name="register_title">注册</string>
+    <string name="register_back_login">＜返回</string>
+    <string name="register_button_text">立即注册</string>
+    <string name="register_input_tip_username">帐号: 手机号/邮箱</string>
+    <string name="register_input_tip_password">密码: 长度为6&#8211;16个字符</string>
+    <string name="register_input_tip_confirm">确认密码</string>
+    <string name="about_title">关于</string>
+    <string name="about_back_home">返回＞</string>
+    <string name="personal_title">我</string>
+    <string name="personal_back_home">＜返回</string>
+    <string name="personal_logout">注销  </string>
+    <string name="personal_my_prizes">我的奖品</string>
+    <string name="personal_account_tip">账户: </string>
+    <string name="personal_integral_tip">积分: </string>
+    <string name="personal_balance_tip">余额: </string>
+    <string name="prepaid_title">充值</string>
+    <string name="prepaid_back_personal">＜返回</string>
+    <string name="prepaid_balance_tip">请输入充值金额</string>
+    <string name="immediately_pay">立即充值</string>
+    <string name="show_exchange_title">立即兑换</string>
+    <string name="share_title">芝麻开门</string>
+    <string name="immediately_share">分享给好友</string>
+    <string name="title_activity_share">ShareActivity</string>
+    <string name="title_activity_recharge">RechargeActivity</string>
+
+</resources>

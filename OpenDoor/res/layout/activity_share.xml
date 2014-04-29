@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ShareActivity" >
+
+    <include
+        android:id="@+id/include1"
+        layout="@layout/carguard_activity_top" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/include1" >
+
+        <ImageView
+            android:id="@+id/share_prize_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:contentDescription="@string/empty_description"
+            android:scaleType="centerCrop"
+            android:src="@drawable/home_prize_ad" />
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="210dp"
+            android:ems="9"
+            android:gravity="left|top"
+            android:inputType="textMultiLine"
+            android:textColor="#333333" />
+
+        <Button
+            android:id="@+id/btn_share"
+            android:layout_width="230dp"
+            android:layout_height="45dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/et_content"
+            android:layout_centerHorizontal="true"
+            android:background="#FF5500"
+            android:tag="immediately_try"
+            android:text="@string/immediately_share"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
+    </RelativeLayout>
+
+</RelativeLayout>
