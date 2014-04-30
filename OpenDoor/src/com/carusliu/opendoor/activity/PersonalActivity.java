@@ -78,7 +78,7 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 			prize.setId("");
 			prize.setName("iPad Air");
 			prize.setInfo("五一超低价");
-			prize.setSmallPic(BitmapFactory.decodeResource(getResources(), R.drawable.my_wx));
+			//prize.setSmallPic(BitmapFactory.decodeResource(getResources(), R.drawable.my_wx));
 			prizeList.add(prize);
 		}
 		//列表适配器
@@ -204,7 +204,7 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 			//icon.setImageBitmap(BitmapFactory.decodeFile(DictEnum.domain + picture));
 			title.setText(prize.getName());
 			desc.setText(prize.getInfo());
-			icon.setImageBitmap(prize.getSmallPic());
+			//icon.setImageBitmap(prize.getSmallPic());
 			return convertView;
 		}
 	}

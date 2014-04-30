@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -30,6 +31,8 @@ import com.carusliu.opendoor.adapter.GridAdapter;
 import com.carusliu.opendoor.modle.Prize;
 import com.carusliu.opendoor.network.NBRequest;
 import com.carusliu.opendoor.sysconstants.SysConstants;
+import com.carusliu.opendoor.tool.AsyncImageLoader;
+import com.carusliu.opendoor.tool.ObjectCacheUtils;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
 
@@ -79,28 +82,31 @@ public class MainActivity extends HWActivity implements OnClickListener {
 		//先显示本地图片
 		superPrizeList = new ArrayList<Prize>();
 		hotPrizeList = new ArrayList<Prize>();
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.my_wx);
-		for(int i=0;i<10;i++){
+		//Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.my_wx);
+		//for(int i=0;i<10;i++){
 			Prize prize = new Prize();
 			prize.setId("");
 			prize.setName("iPad Air");
 			prize.setInfo("");
-			prize.setSmallPic(bitmap);
+			prize.setSmallPic("http://p.bagtree.com/big/1170458/1170458-10_01.jpg");
 			superPrizeList.add(prize);
-		}
-		for(int i=0;i<15;i++){
+		//}
+		//ObjectCacheUtils.saveObjCache(superPrizeList);
+		//superPrizeList = ObjectCacheUtils.readObjCache();
+		/*for(int i=0;i<15;i++){
 			Prize prize = new Prize();
 			prize.setId("");
 			prize.setName("iPad Air");
 			prize.setInfo("");
-			prize.setSmallPic(bitmap);
+			//prize.setSmallPic(bitmap);
 			hotPrizeList.add(prize);
-		}
+		}*/
 		//
-		superListAdapter = new GridAdapter(MainActivity.this, superPrizeList);
-		hotListAdapter = new GridAdapter(MainActivity.this, superPrizeList);
+		superListAdapter = new GridAdapter(MainActivity.this, superPrizeList,superGridView);
+		hotListAdapter = new GridAdapter(MainActivity.this, superPrizeList,hotGridView);
 		superGridView.setAdapter(superListAdapter);
 		hotGridView.setAdapter(hotListAdapter);
+		
 		superGridView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -126,71 +132,24 @@ public class MainActivity extends HWActivity implements OnClickListener {
 
 	@Override
 	public void parseResponse(NBRequest request) {
-
 			if (SysConstants.ZERO.equals(request.getCode())) {
 				
 				//解析数据更新界面
 				JSONObject jsonObject = request.getBodyJSONObject();
-				new GridTask().execute(jsonObject);
-			}
-	
-	}
-	
-	public class GridTask extends AsyncTask<JSONObject, Integer, String>{
-
-		@Override
-		protected String doInBackground(JSONObject... jsonObj) {
-			// TODO Auto-generated method stub
-			JSONArray prizeArray = jsonObj[0].optJSONArray("");
-			for(int i=0;i<prizeArray.length();i++){
-				JSONObject prizeObj = prizeArray.optJSONObject(i);
-				Prize prize = new Prize();
-				prize.setId(prizeObj.optString(""));
-				prize.setName(prizeObj.optString(""));
-				prize.setInfo(prizeObj.optString(""));
-				String imageUrl = prizeObj.optString("");
-				InputStream imageStream = null;
-				try {
-					imageStream = new URL(imageUrl).openConnection().getInputStream();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+				JSONArray prizeArray = jsonObject.optJSONArray("");
+				for(int i=0;i<prizeArray.length();i++){
+					JSONObject prizeObj = prizeArray.optJSONObject(i);
+					Prize prize = new Prize();
+					prize.setId(prizeObj.optString(""));
+					prize.setName(prizeObj.optString(""));
+					prize.setInfo(prizeObj.optString(""));
+					prize.setSmallPic(prizeObj.optString(""));
+					superPrizeList.add(prize);
 				}
-				BitmapFactory.Options options = new BitmapFactory.Options();
-				options.inPreferredConfig = Bitmap.Config.RGB_565;   
-				options.inPurgeable = true;  
-				options.inInputShareable = true;  
-				options.inSampleSize = 2;
-				Bitmap bitmap = BitmapFactory.decodeStream(imageStream,null,options);
-				prize.setSmallPic(bitmap);
-				superPrizeList.add(prize);
+				
 			}
-			return null;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-			super.onPreExecute();
-			progressDialog = new ProgressDialog(MainActivity.this);
-			progressDialog.setTitle("加载奖品信息");
-			progressDialog.setMessage("正在加载奖品信息，请稍后...");
-			//progressDialog.setProgressStyle(progressDialog.)
-			progressDialog.show();
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
-			superListAdapter.notifyDataSetChanged();
-			hotListAdapter.notifyDataSetChanged();
-			progressDialog.cancel();
-		}
-		
 	}
-
+	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub

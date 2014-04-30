@@ -1,12 +1,12 @@
 package com.carusliu.opendoor.modle;
 
-import android.graphics.Bitmap;
+import java.io.Serializable;
 
-public class Prize {
+public class Prize implements Serializable{
 
 	private String id;
-	private Bitmap bigPic;
-	private Bitmap smallPic;
+	private String bigPicUrl;
+	private String smallPicUrl;
 	private String name;
 	private String info;
 	public String getId() {
@@ -15,17 +15,17 @@ public class Prize {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public Bitmap getBigPic() {
-		return bigPic;
+	public String getBigPic() {
+		return bigPicUrl;
 	}
-	public void setBigPic(Bitmap bigPic) {
-		this.bigPic = bigPic;
+	public void setBigPic(String bigPic) {
+		this.bigPicUrl = bigPic;
 	}
-	public Bitmap getSmallPic() {
-		return smallPic;
+	public String getSmallPic() {
+		return smallPicUrl;
 	}
-	public void setSmallPic(Bitmap smallPic) {
-		this.smallPic = smallPic;
+	public void setSmallPic(String smallPic) {
+		this.smallPicUrl = smallPic;
 	}
 	public String getName() {
 		return name;
