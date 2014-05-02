@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="94dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/home_ad" />
+                android:src="@drawable/login_ad" />
 
             <TextView
                 android:id="@+id/textView1"

@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -19,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
@@ -37,6 +39,7 @@ public class ShakeActivity extends Activity{
 	private TextView leftText, title;
 	private SlidingDrawer mDrawer;
 	private Button mDrawerBtn;
+	private AnimationDrawable anim;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,9 +49,9 @@ public class ShakeActivity extends Activity{
 		//drawerSet ();//设置  drawer监听    切换 按钮的方向
 		
 		mVibrator = (Vibrator)getApplication().getSystemService(VIBRATOR_SERVICE);
+		//ImageView shakeImage = (ImageView)findViewById(R.id.shakeBg);
+		anim = (AnimationDrawable)findViewById(R.id.shakeBg).getBackground();
 		
-		mImgUp = (RelativeLayout) findViewById(R.id.shakeImgUp);
-		mImgDn = (RelativeLayout) findViewById(R.id.shakeImgDown);
 		leftText = (TextView) findViewById(R.id.btn_left);
 		title = (TextView) findViewById(R.id.tv_center);
 		title.setText("摇一摇");
@@ -62,37 +65,12 @@ public class ShakeActivity extends Activity{
 				finish();
 			}
 		});
-		//mTitle = (RelativeLayout) findViewById(R.id.shake_title_bar);
-		
-		//mDrawer = (SlidingDrawer) findViewById(R.id.slidingDrawer1);
-       // mDrawerBtn = (Button) findViewById(R.id.handle);
-        /*mDrawer.setOnDrawerOpenListener(new OnDrawerOpenListener()
-		{	public void onDrawerOpened()
-			{	
-				mDrawerBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.shake_report_dragger_down));
-				TranslateAnimation titleup = new TranslateAnimation(Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,-1.0f);
-				titleup.setDuration(200);
-				titleup.setFillAfter(true);
-				mTitle.startAnimation(titleup);
-			}
-		});
-		  设定SlidingDrawer被关闭的事件处理 
-		mDrawer.setOnDrawerCloseListener(new OnDrawerCloseListener()
-		{	public void onDrawerClosed()
-			{	
-				mDrawerBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.shake_report_dragger_up));
-				TranslateAnimation titledn = new TranslateAnimation(Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,-1.0f,Animation.RELATIVE_TO_SELF,0f);
-				titledn.setDuration(200);
-				titledn.setFillAfter(false);
-				mTitle.startAnimation(titledn);
-			}
-		});*/
-		
+
 		mShakeListener = new ShakeListener(this);
         mShakeListener.setOnShakeListener(new OnShakeListener() {
 			public void onShake() {
 				//Toast.makeText(getApplicationContext(), "抱歉，暂时没有找到在同一时刻摇一摇的人。\n再试一次吧！", Toast.LENGTH_SHORT).show();
-				startAnim();  //开始 摇一摇手掌动画
+				anim.start();  //开始 摇一摇手掌动画
 				mShakeListener.stop();
 				startVibrato(); //开始 震动
 				new Handler().postDelayed(new Runnable(){
@@ -102,12 +80,14 @@ public class ShakeActivity extends Activity{
 							     "未摇中任何奖品", 10).show();*/
 						showPrizeDialog();
 					    mVibrator.cancel();
+					    anim.stop();
 						mShakeListener.start();
 					}
 				}, 2000);
 			}
 		});
    }
+	
 	public void startAnim () {   //定义摇一摇动画动画
 		AnimationSet animup = new AnimationSet(true);
 		TranslateAnimation mytranslateanimup0 = new TranslateAnimation(Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,-0.5f);

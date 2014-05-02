@@ -7,7 +7,7 @@
         android:id="@+id/iv_item_image"    
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/my_wx"/>  
+        android:src="@drawable/new_s_1"/>  
 
     <TextView 
         android:id="@+id/tv_item_title"    

@@ -34,10 +34,13 @@
 	<color name="transparent">#00000000</color>
 	<color name="main_tabbt_selected">#13171B</color>
 	<color name="main_tabbt_string_normal">#999999</color>
-	<color name="hint_blue">#FF5500</color>
+	<color name="hint_blue">#37c407</color>
     <color name="white">#ffffff</color>
     <color name="search_hint">#ffcccccc</color>
     <color name="set_lint">#DDDDDD</color>
     <color name="text_color_about_af">#AFAFAF</color>
     <color name="text_color_about_d7">#D7D7D7</color>
+    
+    <color name="bg_color">#eafae5</color>
+    <color name="bg_lead_color">#F6F6F6</color>
 </resources>

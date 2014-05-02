@@ -24,7 +24,7 @@ public class Login extends HWActivity implements OnClickListener{
 	private EditText etName; // ÕÊºÅ±à¼­¿ò
 	private EditText etPwd; // ÃÜÂë±à¼­¿ò
 	private TextView leftText, title, rightText;
-	private Button loginBtn;
+	private Button loginBtn, registerBtn;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,13 +40,14 @@ public class Login extends HWActivity implements OnClickListener{
 		etName = (EditText) findViewById(R.id.et_login_name);
 		etPwd = (EditText) findViewById(R.id.et_login_pass);
 		loginBtn = (Button) findViewById(R.id.btn_login);
+		registerBtn = (Button)findViewById(R.id.btn_register);
 		
 		title.setText("µÇÂ¼");
 		leftText.setText("<·µ»Ø");
 		rightText.setText("×¢²á>");
 
 		rightText.setOnClickListener(this);
-		leftText.setOnClickListener(this);
+		registerBtn.setOnClickListener(this);
 		loginBtn.setOnClickListener(this);
 	}
 
@@ -101,7 +102,7 @@ public class Login extends HWActivity implements OnClickListener{
 		case R.id.btn_left:
 			finish();
 			break;
-		case R.id.btn_right:
+		case R.id.btn_register:
 			Intent intent = new Intent();
 			intent.setClass(Login.this,RegisterActivity.class);
 			startActivity(intent);

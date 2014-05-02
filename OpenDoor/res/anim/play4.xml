@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 指定动画匀速改变 -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+	android:interpolator="@android:anim/linear_interpolator"
+	android:fillAfter="true">
+	
+	<!-- 定义透明度的变换 -->
+	<alpha 
+		android:fromAlpha="1" 
+		android:toAlpha="0" 
+		android:duration="2000"/> 
+	<!-- 定义旋转变换 -->
+	<translate
+	    android:fromXDelta="0"
+	    android:toXDelta="50"
+	    android:toYDelta="50"
+	    android:fromYDelta="0"
+	    android:duration="2000"/>
+</set>

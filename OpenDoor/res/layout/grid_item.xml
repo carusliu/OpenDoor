@@ -10,7 +10,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/my_wx" />
+        android:src="@drawable/new_s_1" />
 
     <TextView
         android:id="@+id/prize_name"

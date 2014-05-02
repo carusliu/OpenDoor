@@ -81,7 +81,7 @@ public class GridAdapter extends BaseAdapter{
             }  
         });
 		if (cachedImage == null) {  
-			viewCache.prizePic.setImageResource(R.drawable.my_wx);  
+			viewCache.prizePic.setImageResource(R.drawable.new_s_2);  
         }else{  
         	viewCache.prizePic.setImageBitmap(cachedImage);  
         }  
