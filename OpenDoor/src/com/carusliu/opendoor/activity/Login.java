@@ -97,18 +97,23 @@ public class Login extends HWActivity implements OnClickListener{
     
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+		Intent intent = new Intent();
 		switch (v.getId()) {
 		case R.id.btn_left:
 			finish();
 			break;
 		case R.id.btn_register:
-			Intent intent = new Intent();
+			
 			intent.setClass(Login.this,RegisterActivity.class);
 			startActivity(intent);
 			break;
 		case R.id.btn_login:
-			loginRequest();
+			//loginRequest();
+			SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
+	        intent.setClass(Login.this,PersonalActivity.class);
+	        startActivity(intent);
+	        Toast.makeText(getApplicationContext(), "µÇÂ¼³É¹¦", Toast.LENGTH_SHORT).show();
+	        finish();
 			break;
 		}
 	}

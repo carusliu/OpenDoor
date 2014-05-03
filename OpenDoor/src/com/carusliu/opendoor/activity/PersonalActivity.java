@@ -37,6 +37,7 @@ import com.carusliu.opendoor.tool.SharedPreferencesKey;
 
 public class PersonalActivity extends HWActivity implements OnClickListener, OnItemClickListener{
 	private TextView leftText, title, rightText;
+	private View prizeItem, infoItem, pwdItem, prizeView, infoView, pwdView;
 	private List<Prize> prizeList = new ArrayList<Prize>();
 	private ListView awardlist;
 	private BaseAdapter awardListAdapter;
@@ -44,6 +45,11 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 	private TextView accountName;
 	private TextView integral;
 	private TextView balance;
+	private ImageView imgPrize,imgInfo,imgPwd;
+	private int prizeFlag = 0;
+	private int infoFlag = 0;
+	private int pwdFlag = 0;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,38 +62,25 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		leftText = (TextView) findViewById(R.id.btn_left);
 		title = (TextView) findViewById(R.id.tv_center);
 		rightText = (TextView) findViewById(R.id.btn_right);
-		accountName = (TextView) findViewById(R.id.tv_account_name);
-		integral = (TextView) findViewById(R.id.tv_integral);
-		balance = (TextView) findViewById(R.id.tv_balance);
-		userPhoto = (ImageButton) findViewById(R.id.ib_personal_photo);
+		prizeItem = (View) findViewById(R.id.rv_person_prize_item);
+		infoItem = (View) findViewById(R.id.rv_person_info_item);
+		pwdItem = (View) findViewById(R.id.rv_person_pwd_item);
+		prizeView = (View) findViewById(R.id.rv_person_prize);
+		infoView = (View) findViewById(R.id.rv_person_info);
+		pwdView = (View) findViewById(R.id.rv_person_pwd);
+		imgPrize = (ImageView) findViewById(R.id.prize_open);
+		imgInfo = (ImageView) findViewById(R.id.info_open);
+		imgPwd = (ImageView) findViewById(R.id.pwd_open);
 		
 		title.setText("个人中心");
 		leftText.setText("<返回");
 		rightText.setText("注销>");
 		rightText.setOnClickListener(this);
 		leftText.setOnClickListener(this);
-		userPhoto.setOnClickListener(this);
+		prizeItem.setOnClickListener(this);
+		infoItem.setOnClickListener(this);
+		pwdItem.setOnClickListener(this);
 		
-		//加载用户数据显示
-		accountName.setText("username");
-		integral.setText("integral");
-		balance.setText("balance");
-		//加载照片
-		for(int i=0;i<6;i++){
-			Prize prize = new Prize();
-			prize.setId("");
-			prize.setName("iPad Air");
-			prize.setInfo("五一超低价");
-			//prize.setSmallPic(BitmapFactory.decodeResource(getResources(), R.drawable.my_wx));
-			prizeList.add(prize);
-		}
-		//列表适配器
-		awardListAdapter = new UserAwardListAdapter(this);
-		//列表
-		awardlist = (ListView) findViewById(R.id.lv_prize_content);
-		awardlist.setAdapter(awardListAdapter);
-		awardlist.setOnItemClickListener(this);
-		//加载我的奖品列表
 	}
     
     public void getUserInfoRequest(){
@@ -129,9 +122,42 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 			//弹出对话框提示
 			showExitDialog();
 			break;
+		case R.id.rv_person_prize_item:
+			if(prizeFlag==0){
+				prizeView.setVisibility(View.VISIBLE);
+				imgPrize.setBackgroundDrawable(getResources().getDrawable(R.drawable.close));
+				prizeFlag = 1;
+			}else{
+				prizeView.setVisibility(View.GONE);
+				imgPrize.setBackgroundDrawable(getResources().getDrawable(R.drawable.open));
+				prizeFlag = 0;
+			}
+			break;
+		case R.id.rv_person_info_item:
+			//弹出对话框提示
+			if(infoFlag==0){
+				infoView.setVisibility(View.VISIBLE);
+				imgInfo.setBackgroundDrawable(getResources().getDrawable(R.drawable.close));
+				infoFlag = 1;
+			}else{
+				infoView.setVisibility(View.GONE);
+				imgInfo.setBackgroundDrawable(getResources().getDrawable(R.drawable.open));
+				infoFlag = 0;
+			}
+			break;
+		case R.id.rv_person_pwd_item:
+			if(pwdFlag==0){
+				pwdView.setVisibility(View.VISIBLE);
+				imgPwd.setBackgroundDrawable(getResources().getDrawable(R.drawable.close));
+				pwdFlag = 1;
+			}else{
+				pwdView.setVisibility(View.GONE);
+				imgPwd.setBackgroundDrawable(getResources().getDrawable(R.drawable.open));
+				pwdFlag = 0;
+			}
+			break;
 		}
 	}
-    
     
     @Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
@@ -165,48 +191,4 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
                 }).create(); // 创建对话框
         alertDialog.show(); // 显示对话框
     }
-    private class UserAwardListAdapter extends BaseAdapter {
-
-		private Context mContext;
-		
-		public UserAwardListAdapter(Context mContext){
-			this.mContext = mContext;
-		}
-		
-		@Override
-		public int getCount() {
-			return prizeList.size();
-		}
-
-		@Override
-		public Object getItem(int index) {
-			return prizeList.get(index);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			ImageView icon = null; //奖品图片
-			TextView title = null; //奖品标题
-			TextView desc = null; //奖品描述
-			if(convertView == null || position < prizeList.size()){
-				convertView = LayoutInflater.from(mContext).inflate(R.layout.award_list_item, null);
-				icon = (ImageView) convertView.findViewById(R.id.iv_item_image);
-				title = (TextView) convertView.findViewById(R.id.tv_item_title);
-				desc = (TextView) convertView.findViewById(R.id.tv_item_desc);
-			}
-			Prize prize = prizeList.get(position);
-
-			//icon.setImageBitmap(BitmapFactory.decodeFile(DictEnum.domain + picture));
-			title.setText(prize.getName());
-			desc.setText(prize.getInfo());
-			//icon.setImageBitmap(prize.getSmallPic());
-			return convertView;
-		}
-	}
-
 }

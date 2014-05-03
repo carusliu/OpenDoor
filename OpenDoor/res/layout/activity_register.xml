@@ -89,16 +89,13 @@
 
         <Button
             android:id="@+id/btn_register"
-            android:layout_width="245dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="190dp"
-            android:background="#FF5500"
-            android:text="@string/register_button_text"
-            android:textColor="#FFFFFF"
-            android:textSize="23sp" />
+            android:background="@drawable/reg_btn"/>
     </RelativeLayout>
 
 </RelativeLayout>

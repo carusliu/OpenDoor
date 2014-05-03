@@ -17,12 +17,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 
 import com.carusliu.opendoor.R;
+import com.carusliu.opendoor.tool.SharedPreferencesHelper;
+import com.carusliu.opendoor.tool.SharedPreferencesKey;
 
-public class Whatsnew extends Activity {
+public class Whatsnew extends HWActivity implements OnClickListener {
 	
 	private ViewPager mViewPager;	
 	private ViewPager newPager, superPager;
@@ -36,6 +40,7 @@ public class Whatsnew extends Activity {
 	private int superCurrentItem = 0; // 当前图片的索引号
 	private Timer newTimer, superTimer;
 	private TimerTask newTask, superTask;
+	private TextView leftText, title, rightText;
 
 		
 	private int currIndex = 0;
@@ -78,19 +83,20 @@ public class Whatsnew extends Activity {
         superPrizeImageS1 = (ImageView)view2.findViewById(R.id.img_super_s_1);
         superPrizeImageS2 = (ImageView)view2.findViewById(R.id.img_super_s_2);
         superPrizeImageS3 = (ImageView)view2.findViewById(R.id.img_super_s_3);
+		leftText = (TextView) view3.findViewById(R.id.btn_left);
+		title = (TextView) view3.findViewById(R.id.tv_center);
+		rightText = (TextView) view3.findViewById(R.id.btn_right);
+		startBtn = (Button)view3.findViewById(R.id.startBtn);
+		
+		title.setText("芝麻开门");
+		leftText.setText("<关于");
+		
+		rightText.setOnClickListener(this);
+		leftText.setOnClickListener(this);
+		startBtn.setOnClickListener(this);
         
         newPager.setOnPageChangeListener(new OnNewPageChangeListener());
         superPager.setOnPageChangeListener(new OnSuperPageChangeListener());
-        startBtn = (Button)view3.findViewById(R.id.startBtn);
-        startBtn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.setClass(Whatsnew.this, ShakeActivity.class);
-				startActivity(intent);
-			}
-		});
         
       //每个页面的view数据
         final ArrayList<View> views = new ArrayList<View>();
@@ -247,6 +253,18 @@ public class Whatsnew extends Activity {
 		exacuteSuperSwitchTask();
     }    
     
+    @Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
+				"0").equals("0")) {
+			
+			rightText.setText("登录>");
+		} else {
+			rightText.setText("个人>");
+		}
+	}
     public class MyOnPageChangeListener implements OnPageChangeListener {
 		@Override
 		public void onPageSelected(int arg0) {
@@ -377,6 +395,33 @@ public class Whatsnew extends Activity {
     		superTimer.schedule(superTask, 0, 2000);
     }
 
-     
+    @Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		Intent intent = new Intent();
+		switch (v.getId()) {
+		case R.id.btn_left:
+			intent.setClass(Whatsnew.this, AboutActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.btn_right:
+			if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
+					"0").equals("0")) {
+				
+				intent.setClass(Whatsnew.this, Login.class);
+			} else {
+				intent.setClass(Whatsnew.this, PersonalActivity.class);
+			}
+			
+			startActivity(intent);
+			break;
+		case R.id.startBtn:
+			intent.setClass(Whatsnew.this, ShakeActivity.class);
+			startActivity(intent);
+			break;
+		}
+	}
+    
+    
     
 }

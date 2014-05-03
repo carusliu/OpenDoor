@@ -1,69 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" 
-    android:background="@color/bg_color" 
-    android:layout_width="fill_parent" 
-    android:layout_height="fill_parent"
-  >
-    <RelativeLayout 
     android:layout_width="fill_parent"
-    android:layout_height="49.5dp"
-    android:background="@color/hint_blue" >
+    android:layout_height="fill_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tv_center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="32dp"
-        android:layout_marginTop="22dp"
-        android:textColor="@color/white"
-        android:text="超级大奖"
-        android:textSize="20sp" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="49.5dp"
+        android:background="@color/hint_blue" >
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/tv_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="32dp"
+            android:layout_marginTop="22dp"
+            android:text="超级大奖"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
     <com.carusliu.opendoor.view.ChildViewPager
         android:id="@+id/super_prize_pager"
         android:layout_width="fill_parent"
-        android:layout_height="200dp" 
-        android:text="最新大奖"/>
-<LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
+        android:layout_marginTop="49.5dp"
+        android:text="最新大奖" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="65dp"
         android:layout_below="@+id/super_prize_pager"
-        android:layout_marginTop="5dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal" >
 
-        <ImageView
-            android:id="@+id/img_super_s_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="2.5dp"
-            android:padding="3dp"
-            android:src="@drawable/new_s_1"
-            android:background="@color/hint_blue" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.333"
+            android:gravity="center" >
 
-        <ImageView
-            android:id="@+id/img_super_s_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2.5dp"
-            android:layout_marginRight="2.5dp"
-            android:padding="3dp"
-            android:src="@drawable/new_s_2"
-            android:background="@color/hint_blue" />
+            <ImageView
+                android:id="@+id/img_super_s_1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="2.5dp"
+                android:background="@color/hint_blue"
+                android:padding="3dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/new_s_1" />
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/img_super_s_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2.5dp"
-            android:layout_marginRight="5dp"
-            android:padding="3dp"
-            android:src="@drawable/new_s_3"
-            android:background="@color/hint_blue"/>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.333"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/img_super_s_2"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="2.5dp"
+                android:layout_marginRight="2.5dp"
+                android:background="@color/hint_blue"
+                android:padding="3dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/new_s_2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.333"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/img_super_s_3"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="2.5dp"
+                android:layout_marginRight="5dp"
+                android:background="@color/hint_blue"
+                android:padding="3dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/new_s_3" />
+        </LinearLayout>
     </LinearLayout>
+
 </RelativeLayout>

@@ -6,18 +6,19 @@
 
     <ImageView
         android:id="@+id/img_lead_zmkm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_horizontal"        
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="60dp"
+        android:scaleType="fitXY"
         android:src="@drawable/zmkm" />
 
     <ImageView
         android:id="@+id/img_lead_yyy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="115dp"
         android:background="@drawable/yyy" />
 
     <LinearLayout
@@ -34,16 +35,16 @@
 
             <ImageView
                 android:id="@+id/img_lead_play1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:background="@drawable/play1"
-                android:layout_marginTop="120dp"
+                android:layout_marginTop="170dp"
                 android:layout_alignParentRight="true" />
 
             <ImageView
                 android:id="@+id/img_lead_play3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_below="@+id/img_lead_play1"
                 android:background="@drawable/play3" 
                 android:layout_marginBottom="60dp"
@@ -58,15 +59,15 @@
 
             <ImageView
                 android:id="@+id/img_lead_play2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="120dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="170dp"
                 android:background="@drawable/play2" />
 
             <ImageView
                 android:id="@+id/img_lead_play4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_below="@+id/img_lead_play2"
                 android:layout_marginBottom="60dp"
                 android:background="@drawable/play4" />

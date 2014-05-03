@@ -2,19 +2,15 @@ package com.carusliu.opendoor.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +21,7 @@ import com.carusliu.opendoor.tool.SharedPreferencesKey;
 public class PrizeDetail extends Activity implements OnClickListener {
 	
 	 private TextView leftText, title, rightText;
-	 private Button promote_rate;
+	 private ImageView promote_rate, shareBtn;
 	 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,18 +35,20 @@ public class PrizeDetail extends Activity implements OnClickListener {
     public void initView() {
 		
 		//花几毛钱提高中奖率事件绑定
-		promote_rate = (Button) findViewById(R.id.btn_promote_rate);
+		promote_rate = (ImageView) findViewById(R.id.btn_promote_rate);
+		shareBtn = (ImageView) findViewById(R.id.btn_share);
 		leftText = (TextView) findViewById(R.id.btn_left);
 		title = (TextView) findViewById(R.id.tv_center);
 		rightText = (TextView) findViewById(R.id.btn_right);
 		
-		title.setText("奖品详情");
+		title.setText("领奖啦");
 		leftText.setText("<返回");
-		rightText.setText("分享>");
+		rightText.setText("删除>");
 
 		rightText.setOnClickListener(this);
 		leftText.setOnClickListener(this);
 		promote_rate.setOnClickListener(this);
+		shareBtn.setOnClickListener(this);
 		
 		//加载兑换内容
 		WebView wv_about = (WebView) findViewById(R.id.wv_exchange_content);
@@ -73,7 +71,7 @@ public class PrizeDetail extends Activity implements OnClickListener {
 		case R.id.btn_left:
 			finish();
 			break;
-		case R.id.btn_right:
+		case R.id.btn_share:
 			Intent intent = new Intent(PrizeDetail.this, ShareActivity.class);
 			startActivity(intent);
 			break;
