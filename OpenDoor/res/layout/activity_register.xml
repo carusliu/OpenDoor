@@ -9,93 +9,89 @@
         android:id="@+id/register_titlebar"
         layout="@layout/carguard_activity_top" />
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/register_titlebar" >
 
-        <EditText
-            android:id="@+id/et_reg_name"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="20dp"
-            android:contentDescription="@string/empty_description"
-            android:ems="10"
-            android:inputType="text"
-            android:textSize="14sp" />
+            android:layout_height="match_parent" >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="20dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:text="@string/register_input_tip_username"
-            android:textColor="#999999"
-            android:textStyle="italic" />
+            <EditText
+                android:id="@+id/et_reg_account"
+                style="@style/reg_et_style"
+                android:hint="请输入手机号/邮箱"
+                android:inputType="text" />
 
-        <EditText
-            android:id="@+id/et_reg_pwd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="70dp"
-            android:contentDescription="@string/empty_description"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:textSize="14sp" />
+            <EditText
+                android:id="@+id/et_reg_pwd"
+                style="@style/reg_et_style"
+                android:layout_below="@+id/et_reg_account"
+                android:hint="请输入密码"
+                android:inputType="textPassword" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="70dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:text="@string/register_input_tip_password"
-            android:textColor="#999999"
-            android:textStyle="italic" />
+            <EditText
+                android:id="@+id/et_reg_pwd_confirm"
+                style="@style/reg_et_style"
+                android:layout_below="@+id/et_reg_pwd"
+                android:hint="请确认密码"
+                android:inputType="textPassword" />
 
-        <EditText
-            android:id="@+id/et_reg_pwd_confirm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="120dp"
-            android:contentDescription="@string/empty_description"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:textSize="14sp" />
+            <EditText
+                android:id="@+id/et_reg_name"
+                style="@style/reg_et_style"
+                android:layout_below="@+id/et_reg_pwd_confirm"
+                android:hint="请输入用户名" />
 
-        <TextView
-            android:id="@+id/tv_reg_confirm"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="120dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:text="@string/register_input_tip_confirm"
-            android:textColor="#999999"
-            android:textStyle="italic" />
+            <EditText
+                android:id="@+id/et_reg_phone"
+                style="@style/reg_et_style"
+                android:layout_below="@+id/et_reg_name"
+                android:hint="请输入手机号"
+                android:inputType="phone"
+                android:maxLength="11" />
 
-        <Button
-            android:id="@+id/btn_register"
-            android:layout_width="150dp"
-            android:layout_height="35dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="190dp"
-            android:background="@drawable/reg_btn"/>
-    </RelativeLayout>
+            <EditText
+                android:id="@+id/et_reg_email"
+                style="@style/reg_et_style"
+                android:layout_below="@+id/et_reg_phone"
+                android:hint="请输入邮箱"
+                android:inputType="textEmailAddress" />
+
+            <RadioGroup
+                android:id="@+id/radio_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_reg_email"
+                android:layout_marginLeft="30dp"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/rb_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="男" />
+
+                <RadioButton
+                    android:id="@+id/rb_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="女" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/btn_register"
+                android:layout_width="150dp"
+                android:layout_height="35dp"
+                android:layout_below="@+id/radio_gender"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/reg_btn" />
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

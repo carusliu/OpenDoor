@@ -1,22 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" 
-    android:background="@color/white" 
-    android:layout_width="fill_parent" 
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-  >
-    <include
-        android:id="@+id/include1"
-        layout="@layout/carguard_activity_top" />
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="49.5dp"
+        android:background="@color/hint_blue" >
+
+        <TextView
+            android:id="@+id/btn_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="32dp"
+            android:layout_marginTop="22dp"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/btn_right"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_width="47dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:background="@drawable/img_personal" />
+    </RelativeLayout>
 
     <Button
-              android:id="@+id/startBtn"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_alignParentBottom="true"
-              android:layout_centerHorizontal="true"
-              android:layout_marginBottom="120dp"
-              android:background="@drawable/btn_try"              
-			  android:layout_gravity="center_vertical"
-			  android:onClick="startbutton"/>
+        android:id="@+id/startBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="120dp"
+        android:background="@drawable/btn_try"
+        android:onClick="startbutton" />
+
 </RelativeLayout>

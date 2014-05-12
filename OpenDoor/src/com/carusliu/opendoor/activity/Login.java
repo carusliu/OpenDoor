@@ -46,6 +46,7 @@ public class Login extends HWActivity implements OnClickListener{
 		leftText.setText("<返回");
 		rightText.setText("注册>");
 
+		leftText.setOnClickListener(this);
 		rightText.setOnClickListener(this);
 		registerBtn.setOnClickListener(this);
 		loginBtn.setOnClickListener(this);
@@ -70,9 +71,8 @@ public class Login extends HWActivity implements OnClickListener{
 		}
     	
     	HashMap<String, String> data = new HashMap<String, String>();
-		data.put(SysConstants.USER_ID, userName);
-		data.put(SysConstants.PASSWORD, MD5Util.md5(userPwd));
-		data.put(SysConstants.PARAM_APP_ID, SysConstants.APP_ID);
+		data.put(SysConstants.USER_ACCOUNT, userName);
+		data.put(SysConstants.USER_PASSWORD, MD5Util.md5(userPwd));
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.sendRequest(m_handler, SysConstants.REQUEST_LOGIN, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
@@ -85,10 +85,11 @@ public class Login extends HWActivity implements OnClickListener{
     	if(request.getCode().equals(SysConstants.ZERO)){
 	    	JSONObject jsonObject = request.getBodyJSONObject();
 	    	System.out.println(jsonObject.toString());
+	    	
 	    	SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
-	        /*Intent intent = new Intent();
+	        Intent intent = new Intent();
 	        intent.setClass(Login.this,MainActivity.class);
-	        startActivity(intent);*/
+	        startActivity(intent);
 	    	
 	        Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
 	        finish();
@@ -108,12 +109,7 @@ public class Login extends HWActivity implements OnClickListener{
 			startActivity(intent);
 			break;
 		case R.id.btn_login:
-			//loginRequest();
-			SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
-	        intent.setClass(Login.this,PersonalActivity.class);
-	        startActivity(intent);
-	        Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
-	        finish();
+			loginRequest();
 			break;
 		}
 	}

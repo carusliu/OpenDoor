@@ -2,15 +2,24 @@ package com.carusliu.opendoor.activity;
 
 
 
+import java.util.HashMap;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -24,12 +33,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carusliu.opendoor.R;
 import com.carusliu.opendoor.activity.ShakeListener.OnShakeListener;
+import com.carusliu.opendoor.modle.Prize;
+import com.carusliu.opendoor.network.NBRequest;
+import com.carusliu.opendoor.sysconstants.SysConstants;
+import com.carusliu.opendoor.tool.AsyncImageLoader.ImageCallback;
 
 
-public class ShakeActivity extends Activity{
+public class ShakeActivity extends HWActivity{
 	
 	ShakeListener mShakeListener = null;
 	Vibrator mVibrator;
@@ -40,7 +54,7 @@ public class ShakeActivity extends Activity{
 	private SlidingDrawer mDrawer;
 	private Button mDrawerBtn;
 	private AnimationDrawable anim;
-
+	private ProgressDialog progressDialog;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -78,7 +92,14 @@ public class ShakeActivity extends Activity{
 					public void run(){
 						/*Toast.makeText(getApplicationContext(),
 							     "未摇中任何奖品", 10).show();*/
-						showPrizeDialog();
+						progressDialog = new ProgressDialog(ShakeActivity.this);
+						progressDialog.setMessage("正在获取奖品信息，请稍后...");
+						if(isOnline()){
+							progressDialog.show();
+							sendPrizeRequest();
+						}else{
+							Toast.makeText(ShakeActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
+						}
 					    mVibrator.cancel();
 					    anim.stop();
 						mShakeListener.start();
@@ -87,7 +108,42 @@ public class ShakeActivity extends Activity{
 			}
 		});
    }
-	
+	public void sendPrizeRequest(){
+		HashMap<String, String> data = new HashMap<String, String>();
+		data.put(SysConstants.LANTITUDE, "140");
+		data.put(SysConstants.LONGITUDE, "39");
+		NBRequest nbRequest = new NBRequest();
+		
+		nbRequest.sendRequest(m_handler, SysConstants.TODAY_AWARDS_URL, data,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+	}
+
+	@Override
+	public void parseResponse(NBRequest request) {
+			if (SysConstants.ZERO.equals(request.getCode())) {
+				
+				//解析数据更新界面
+				JSONObject jsonObject = request.getBodyJSONObject();
+				JSONArray prizeArray = jsonObject.optJSONArray("awardList");
+				for(int i=0;i<6;i++){
+					//JSONObject prizeObj = prizeArray.optJSONObject(i);
+					Prize prize = new Prize();
+					/*prize.setId(prizeObj.optString(""));
+					prize.setName(prizeObj.optString(""));
+					prize.setInfo(prizeObj.optString(""));*/
+					//prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
+					prize.setSmallPic("http://i0.sinaimg.cn/home/2014/0509/U8843P30DT20140509085453.jpg");
+					//prizeList.add(prize);
+				}
+				//异步加载图片
+				
+				progressDialog.dismiss();
+				Intent intent = new Intent();
+            	intent.setClass(ShakeActivity.this, PrizeDetail.class);
+            	startActivity(intent);
+				
+			}
+	}
 	public void startAnim () {   //定义摇一摇动画动画
 		AnimationSet animup = new AnimationSet(true);
 		TranslateAnimation mytranslateanimup0 = new TranslateAnimation(Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,-0.5f);
@@ -185,4 +241,10 @@ public class ShakeActivity extends Activity{
 		
 		return location;
 	}
+	public boolean isOnline() {
+  	    ConnectivityManager connMgr = (ConnectivityManager) 
+  	            getSystemService(Context.CONNECTIVITY_SERVICE);
+  	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+  	    return (networkInfo != null && networkInfo.isConnected());
+  	} 
 }

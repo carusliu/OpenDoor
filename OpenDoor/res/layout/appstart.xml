@@ -20,6 +20,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="115dp"
         android:background="@drawable/yyy" />
+    
 
     <LinearLayout
         android:id="@+id/rl_play"
@@ -73,5 +74,11 @@
                 android:background="@drawable/play4" />
         </RelativeLayout>
     </LinearLayout>
-
+	<ImageView
+	    android:id="@+id/btn_play"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="250dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/btn_play"/>
 </FrameLayout>

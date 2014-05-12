@@ -6,21 +6,17 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -42,10 +38,11 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 	private ListView awardlist;
 	private BaseAdapter awardListAdapter;
 	private ImageButton userPhoto;
-	private TextView accountName;
-	private TextView integral;
-	private TextView balance;
+	private TextView tvUserName, tvUserGender, tvUserPhone, tvUserEmail;
+	private EditText etUserName, etUserGender, etUserPhone, etUserEmail, etOldPwd,etNewPwd,etConfirmPwd;
+	private TextView modifyInfo;
 	private ImageView imgPrize,imgInfo,imgPwd;
+	private Button modifyInfoBtn, modifyPwdBtn;
 	private int prizeFlag = 0;
 	private int infoFlag = 0;
 	private int pwdFlag = 0;
@@ -71,6 +68,20 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		imgPrize = (ImageView) findViewById(R.id.prize_open);
 		imgInfo = (ImageView) findViewById(R.id.info_open);
 		imgPwd = (ImageView) findViewById(R.id.pwd_open);
+		modifyInfo = (TextView)findViewById(R.id.tv_modify_info);
+		
+		tvUserName = (TextView)findViewById(R.id.user_name);
+		tvUserGender = (TextView)findViewById(R.id.user_gender);
+		tvUserPhone = (TextView)findViewById(R.id.user_phone);
+		tvUserEmail = (TextView)findViewById(R.id.user_email);
+		etUserName =(EditText)findViewById(R.id.et_user_name);
+		etUserGender =(EditText)findViewById(R.id.et_user_gender);
+		etUserPhone =(EditText)findViewById(R.id.et_user_phone);
+		etUserEmail =(EditText)findViewById(R.id.et_user_email);
+		
+		etOldPwd =(EditText)findViewById(R.id.et_old_pwd);
+		etNewPwd =(EditText)findViewById(R.id.et_new_pwd);
+		etConfirmPwd =(EditText)findViewById(R.id.et_confirm_pwd);
 		
 		title.setText("个人中心");
 		leftText.setText("<返回");
@@ -80,14 +91,14 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		prizeItem.setOnClickListener(this);
 		infoItem.setOnClickListener(this);
 		pwdItem.setOnClickListener(this);
-		
+		modifyInfo.setOnClickListener(this);
 	}
     
     public void getUserInfoRequest(){
     	HashMap<String, String> data = new HashMap<String, String>();
     	String userId = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID,
 				"0");
-    	data.put(SysConstants.USER_ID, userId);
+    	//data.put(SysConstants.USER_ID, userId);
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.sendRequest(m_handler, SysConstants.USER_INFO_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
@@ -134,13 +145,15 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 			}
 			break;
 		case R.id.rv_person_info_item:
-			//弹出对话框提示
+			
 			if(infoFlag==0){
 				infoView.setVisibility(View.VISIBLE);
+				modifyInfo.setVisibility(View.VISIBLE);
 				imgInfo.setBackgroundDrawable(getResources().getDrawable(R.drawable.close));
 				infoFlag = 1;
 			}else{
 				infoView.setVisibility(View.GONE);
+				modifyInfo.setVisibility(View.GONE);
 				imgInfo.setBackgroundDrawable(getResources().getDrawable(R.drawable.open));
 				infoFlag = 0;
 			}
@@ -155,6 +168,9 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 				imgPwd.setBackgroundDrawable(getResources().getDrawable(R.drawable.open));
 				pwdFlag = 0;
 			}
+			break;
+		case R.id.tv_modify_info:
+			
 			break;
 		}
 	}

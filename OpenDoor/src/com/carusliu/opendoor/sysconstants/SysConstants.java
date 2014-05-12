@@ -5,7 +5,7 @@ import com.carusliu.opendoor.tool.Tool;
 public class SysConstants {
 
 	//HTTP
-	public static final String SERVER_NAME = "api.obd.camp4app.com"; // test
+	public static final String SERVER_NAME = "bswlkj.gotoip55.com"; // test
 	public static final String SERVER = "http://" + SERVER_NAME + "/";
 	public static final String UTF_8 = "UTF-8";
 	public static final int CONNECT_TIMEOUT = 60 * 1000;
@@ -57,12 +57,12 @@ public class SysConstants {
 	public static final String USER_AWARDS_URL = DOMAIN + "/interface/user_awards";
 	/**更多奖品URL*/
 	public static final String AWARD_LIST_URL = DOMAIN + "/interface/award_list";
-	/**今日大奖URL*/
-	public static final String TODAY_AWARDS_URL = DOMAIN + "/interface/today_awards";
+	/**获取奖品URL*/
+	public static final String TODAY_AWARDS_URL = "award/getNearAward";
 	/**用户登录URL*/
-	public static final String LOGIN_URL = DOMAIN + "/interface/login";
+	public static final String LOGIN_URL = "user/login";
 	/**用户注册URL*/
-	public static final String REGISTER_URL = DOMAIN + "/interface/register";
+	public static final String REGISTER_URL = "user/userAdd";
 	/**用户信息URL*/
 	public static final String USER_INFO_URL = DOMAIN + "/interface/user_info";
 	/**立即充值URL*/
@@ -72,9 +72,16 @@ public class SysConstants {
 
 
 	//请求参数
-	public static final String USER_ID = "userid";
-	public static final String APP_ID = "1";//0代表车保镖，1代表车立方
-	public static final String PASSWORD = "password";
-	public static final String PARAM_APP_ID = "appID";
+	
+	public static final String USER_ID = "userId";
+	public static final String USER_ACCOUNT = "userAccount";
+	public static final String USER_PASSWORD = "userPassword";//0代表车保镖，1代表车立方
+	public static final String USER_NAME = "userName";
+	public static final String USER_GENDER = "userGender";
+	public static final String USER_PHONE = "userPhone";
+	public static final String USER_EMAIL = "userEmail";
+	public static final String LANTITUDE = "lat1";
+	public static final String LONGITUDE = "lng1";
+	
 
 }

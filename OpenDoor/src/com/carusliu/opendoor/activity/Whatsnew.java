@@ -1,11 +1,20 @@
 package com.carusliu.opendoor.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
@@ -21,10 +30,16 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
+import android.widget.Toast;
 
 import com.carusliu.opendoor.R;
+import com.carusliu.opendoor.modle.Prize;
+import com.carusliu.opendoor.network.NBRequest;
+import com.carusliu.opendoor.sysconstants.SysConstants;
+import com.carusliu.opendoor.tool.AsyncImageLoader;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
+import com.carusliu.opendoor.tool.AsyncImageLoader.ImageCallback;
 
 public class Whatsnew extends HWActivity implements OnClickListener {
 	
@@ -41,8 +56,10 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 	private Timer newTimer, superTimer;
 	private TimerTask newTask, superTask;
 	private TextView leftText, title, rightText;
-
-		
+	private ProgressDialog progressDialog;
+	private ArrayList<Prize> prizeList;
+	private ArrayList<ImageView> largeImageList,smallImageList;
+	AsyncImageLoader asyncImageLoader ;
 	private int currIndex = 0;
 	private Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
@@ -62,6 +79,8 @@ public class Whatsnew extends HWActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.whatsnew_viewpager);
         
+        prizeList = new ArrayList<Prize>();
+        asyncImageLoader = new AsyncImageLoader(this);
         mViewPager = (ViewPager)findViewById(R.id.whatsnew_viewpager);        
         mViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
        
@@ -75,14 +94,25 @@ public class Whatsnew extends HWActivity implements OnClickListener {
         View view1 = mLi.inflate(R.layout.whats1, null);
         View view2 = mLi.inflate(R.layout.whats2, null);
         View view3 = mLi.inflate(R.layout.whats3, null);
+        
         newPager = (ViewPager)view1.findViewById(R.id.new_prize_pager);
         superPager = (ViewPager)view2.findViewById(R.id.super_prize_pager);
+        
         newPrizeImageS1 = (ImageView)view1.findViewById(R.id.img_new_s_1);
         newPrizeImageS2 = (ImageView)view1.findViewById(R.id.img_new_s_2);
         newPrizeImageS3 = (ImageView)view1.findViewById(R.id.img_new_s_3);
         superPrizeImageS1 = (ImageView)view2.findViewById(R.id.img_super_s_1);
         superPrizeImageS2 = (ImageView)view2.findViewById(R.id.img_super_s_2);
         superPrizeImageS3 = (ImageView)view2.findViewById(R.id.img_super_s_3);
+        
+        smallImageList = new ArrayList<ImageView>();
+        smallImageList.add(newPrizeImageS1);
+        smallImageList.add(newPrizeImageS2);
+        smallImageList.add(newPrizeImageS3);
+        smallImageList.add(superPrizeImageS1);
+        smallImageList.add(superPrizeImageS2);
+        smallImageList.add(superPrizeImageS3);
+        
 		leftText = (TextView) view3.findViewById(R.id.btn_left);
 		title = (TextView) view3.findViewById(R.id.tv_center);
 		rightText = (TextView) view3.findViewById(R.id.btn_right);
@@ -131,9 +161,10 @@ public class Whatsnew extends HWActivity implements OnClickListener {
         superPrizeImage3.setImageResource(R.drawable.home_prize_ad);
         superPrizeImage3.setScaleType(ScaleType.CENTER_CROP);
         superViewList.add(superPrizeImage3);
-
-
         
+        largeImageList = new ArrayList<ImageView>();
+        largeImageList.addAll(newViewList);
+        largeImageList.addAll(superViewList);
         //填充ViewPager的数据适配器
         PagerAdapter mPagerAdapter = new PagerAdapter() {
 			
@@ -251,20 +282,88 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 		});
 		exacuteNewSwitchTask();
 		exacuteSuperSwitchTask();
+		
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setMessage("正在获取奖品信息，请稍后...");
+		if(isOnline()){
+			progressDialog.show();
+			sendPrizeRequest();
+		}else{
+			Toast.makeText(this, "网络不可用", Toast.LENGTH_SHORT).show();
+		}
     }    
     
-    @Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
-				"0").equals("0")) {
-			
-			rightText.setText("登录>");
-		} else {
-			rightText.setText("个人>");
-		}
+    public void sendPrizeRequest(){
+		HashMap<String, String> data = new HashMap<String, String>();
+		data.put(SysConstants.LANTITUDE, "140");
+		data.put(SysConstants.LONGITUDE, "39");
+		NBRequest nbRequest = new NBRequest();
+		
+		nbRequest.sendRequest(m_handler, SysConstants.TODAY_AWARDS_URL, data,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
+
+	@Override
+	public void parseResponse(NBRequest request) {
+			if (SysConstants.ZERO.equals(request.getCode())) {
+				
+				//解析数据更新界面
+				JSONObject jsonObject = request.getBodyJSONObject();
+				JSONArray prizeArray = jsonObject.optJSONArray("awardList");
+				for(int i=0;i<6;i++){
+					//JSONObject prizeObj = prizeArray.optJSONObject(i);
+					Prize prize = new Prize();
+					/*prize.setId(prizeObj.optString(""));
+					prize.setName(prizeObj.optString(""));
+					prize.setInfo(prizeObj.optString(""));*/
+					//prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
+					prize.setSmallPic("http://i0.sinaimg.cn/home/2014/0509/U8843P30DT20140509085453.jpg");
+					prizeList.add(prize);
+				}
+				//异步加载图片
+			
+				asyncImageLoader.loadBitmap(prizeList.get(0).getSmallPic(), new ImageCallback() {  
+		            public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  
+		            	
+		                smallImageList.get(0).setImageBitmap(imageDrawable);
+		                largeImageList.get(0).setImageBitmap(imageDrawable);
+		            }  
+		        });
+				asyncImageLoader.loadBitmap(prizeList.get(1).getSmallPic(), new ImageCallback() {  
+					public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  
+						smallImageList.get(1).setImageBitmap(imageDrawable);
+						largeImageList.get(1).setImageBitmap(imageDrawable);
+					}  
+				});
+				asyncImageLoader.loadBitmap(prizeList.get(2).getSmallPic(), new ImageCallback() {  
+					public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  
+						smallImageList.get(2).setImageBitmap(imageDrawable);
+						largeImageList.get(2).setImageBitmap(imageDrawable);
+					}  
+				});
+				asyncImageLoader.loadBitmap(prizeList.get(3).getSmallPic(), new ImageCallback() {  
+					public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  
+						smallImageList.get(3).setImageBitmap(imageDrawable);
+						largeImageList.get(3).setImageBitmap(imageDrawable);
+					}  
+				});
+				asyncImageLoader.loadBitmap(prizeList.get(4).getSmallPic(), new ImageCallback() {  
+					public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  
+						smallImageList.get(4).setImageBitmap(imageDrawable);
+						largeImageList.get(4).setImageBitmap(imageDrawable);
+					}  
+				});
+				asyncImageLoader.loadBitmap(prizeList.get(5).getSmallPic(), new ImageCallback() {  
+					public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  
+						smallImageList.get(5).setImageBitmap(imageDrawable);
+						largeImageList.get(5).setImageBitmap(imageDrawable);
+					}  
+				});
+				
+				progressDialog.dismiss();
+			}
+	}
+    
     public class MyOnPageChangeListener implements OnPageChangeListener {
 		@Override
 		public void onPageSelected(int arg0) {
@@ -422,6 +521,12 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 		}
 	}
     
-    
+  //判断是否有网络连接
+  	public boolean isOnline() {
+  	    ConnectivityManager connMgr = (ConnectivityManager) 
+  	            getSystemService(Context.CONNECTIVITY_SERVICE);
+  	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+  	    return (networkInfo != null && networkInfo.isConnected());
+  	} 
     
 }

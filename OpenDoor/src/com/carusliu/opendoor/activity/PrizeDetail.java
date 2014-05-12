@@ -43,24 +43,14 @@ public class PrizeDetail extends Activity implements OnClickListener {
 		
 		title.setText("领奖啦");
 		leftText.setText("<返回");
-		rightText.setText("删除>");
+		rightText.setText("删除");
 
 		rightText.setOnClickListener(this);
 		leftText.setOnClickListener(this);
 		promote_rate.setOnClickListener(this);
 		shareBtn.setOnClickListener(this);
 		
-		//加载兑换内容
-		WebView wv_about = (WebView) findViewById(R.id.wv_exchange_content);
-		WebSettings setting = wv_about.getSettings();
-		setting = wv_about.getSettings();
-		setting.setJavaScriptEnabled(true);
-		setting.setBuiltInZoomControls(false);//不允许放大
-		//setting.setLightTouchEnabled(true);
-		setting.setSupportZoom(false);
-		setting.setAllowFileAccess(true);
-		//setting.setBlockNetworkImage(true);
-		//wv_about.loadUrl(DictEnum.exchange_url+"?uid="+uid+"&latitude="+session.getLatitude()+"&longitude="+session.getLongitude());
+		
 	}
     
     @Override
@@ -139,7 +129,10 @@ public class PrizeDetail extends Activity implements OnClickListener {
 			}
 		}else{
 			//提示登录
-			Toast.makeText(this, "您尚未登录，请先登录", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, "您尚未登录，请先登录", Toast.LENGTH_SHORT).show();
+			//先将奖品信息存起来
+			Intent intent = new Intent(PrizeDetail.this, Login.class);
+			startActivity(intent);
 		}
     }
 }

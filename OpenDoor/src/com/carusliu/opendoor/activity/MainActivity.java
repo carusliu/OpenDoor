@@ -44,6 +44,7 @@ public class MainActivity extends HWActivity implements OnClickListener {
 	private ArrayList<Prize> superPrizeList, hotPrizeList;//Êý¾Ý
 	private GridAdapter superListAdapter, hotListAdapter;
 	private ProgressDialog progressDialog;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -124,7 +125,7 @@ public class MainActivity extends HWActivity implements OnClickListener {
 
 	public void sendPrizeRequest(){
 		HashMap<String, String> data = new HashMap<String, String>();
-		data.put(SysConstants.USER_ID, "");
+		//data.put(SysConstants.USER_ID, "");
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.sendRequest(m_handler, SysConstants.REQUEST_LOGIN, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);

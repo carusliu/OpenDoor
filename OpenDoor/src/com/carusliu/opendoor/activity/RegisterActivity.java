@@ -2,14 +2,14 @@ package com.carusliu.opendoor.activity;
 
 import java.util.HashMap;
 
-import org.json.JSONObject;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +23,9 @@ import com.carusliu.opendoor.tool.SharedPreferencesKey;
 
 public class RegisterActivity extends HWActivity implements OnClickListener{
 	private TextView leftText, title, rightText;
-	private EditText etUserName, etPwd, etConfirmPwd;
+	private EditText etUserAccount, etPwd, etConfirmPwd, etUserName, etUserPhone, etUserEmail;
+	private RadioGroup genderRadio;
+	private String gender;
 	private Button registerBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +39,13 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
  		title = (TextView) findViewById(R.id.tv_center);
  		rightText = (TextView) findViewById(R.id.btn_right);
  		registerBtn = (Button) findViewById(R.id.btn_register);
- 		etUserName = (EditText) findViewById(R.id.et_reg_name);
+ 		etUserAccount = (EditText) findViewById(R.id.et_reg_account);
  		etPwd = (EditText) findViewById(R.id.et_reg_pwd);
  		etConfirmPwd = (EditText) findViewById(R.id.et_reg_pwd_confirm);
+ 		etUserName = (EditText) findViewById(R.id.et_reg_name);
+ 		genderRadio = (RadioGroup) findViewById(R.id.radio_gender);
+ 		etUserPhone = (EditText) findViewById(R.id.et_reg_phone);
+ 		etUserEmail = (EditText) findViewById(R.id.et_reg_email);
  		
 		title.setText("注册");
 		leftText.setText("<返回");
@@ -49,22 +55,38 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 		leftText.setOnClickListener(this);
 		registerBtn.setOnClickListener(this);
 		
+		genderRadio.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				// TODO Auto-generated method stub
+				switch(checkedId){
+				case R.id.rb_male:
+					gender = "0";
+					break;
+				case R.id.rb_female:
+					gender = "1";
+					break;
+				}
+			}
+		});
+		
 	}
    
     public void registerRequest(){
-    	String userName  = etUserName.getText().toString().trim();
+    	String userAccount  = etUserAccount.getText().toString().trim();
     	String userPwd  = etPwd.getText().toString().trim();
-    	String confirmPwd  = etPwd.getText().toString().trim();
+    	String confirmPwd  = etConfirmPwd.getText().toString().trim();
+    	String userName  = etUserName.getText().toString().trim();
     	
+    	String userPhone  = etUserPhone.getText().toString().trim();
+    	String userEmail  = etUserEmail.getText().toString().trim();
+
+    	if(!userAccount.matches("^([\\w+\\.]\\w+@[\\w+\\.]+\\w+|1[3568]\\d{9})$")){
+			Toast.makeText(this, "账号必须为正确的手机号和邮箱", Toast.LENGTH_SHORT).show();
+			return;
+		}
     	//检查输入参数
-    	if("".equals(userName)){
-			Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		if(!userName.matches("^([\\w+\\.]\\w+@[\\w+\\.]+\\w+|1[3568]\\d{9})$")){
-			Toast.makeText(this, "用户名必须为邮箱或手机号", Toast.LENGTH_SHORT).show();
-			return;
-		}
 		if(userPwd.equals("")){
 			Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show();
 			return;
@@ -81,10 +103,25 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 			Toast.makeText(this, "两次密码不一致", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
+		if(userName.equals("")){
+			Toast.makeText(this, "姓名不能为空", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(!userPhone.matches("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$")){
+			Toast.makeText(this, "请填写正确的手机号", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(!userPhone.matches("^([a-z0-9A-Z]+[-|//.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?//.)+[a-zA-Z]{2,}$")){
+			Toast.makeText(this, "请填写正确的邮箱", Toast.LENGTH_SHORT).show();
+			return;
+		}
     	HashMap<String, String> data = new HashMap<String, String>();
-		data.put(SysConstants.USER_ID, userName);
-		data.put(SysConstants.PASSWORD, MD5Util.md5(userPwd));
+		data.put(SysConstants.USER_ACCOUNT, userAccount);
+		data.put(SysConstants.USER_PASSWORD, MD5Util.md5(userPwd));
+		data.put(SysConstants.USER_NAME, userName);
+		data.put(SysConstants.USER_GENDER, gender);
+		data.put(SysConstants.USER_PHONE, userPwd);
+		data.put(SysConstants.USER_EMAIL, userEmail);
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.sendRequest(m_handler, SysConstants.REGISTER_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
@@ -95,8 +132,8 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 		// TODO Auto-generated method stub
     	System.out.println(request.getCode());
     	if(request.getCode().equals(SysConstants.ZERO)){
-	    	JSONObject jsonObject = request.getBodyJSONObject();
-	    	System.out.println(jsonObject.toString());
+	    	/*JSONObject jsonObject = request.getBodyJSONObject();
+	    	System.out.println(jsonObject.toString());*/
 	    	SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
 	    	
 	    	Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
@@ -104,6 +141,8 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 			Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
 			AppApplication.getInstance().applicationExit();
 			finish();
+    	}else{
+    		Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
     	}
 	}
     

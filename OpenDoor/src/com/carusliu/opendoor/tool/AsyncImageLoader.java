@@ -65,7 +65,7 @@ public class AsyncImageLoader {
         return result;  
     }  
    
-   public static Bitmap loadImageFromUrl(String imageUrl) {  
+   public  Bitmap loadImageFromUrl(String imageUrl) {  
 	   InputStream imageStream = null;
 	   
 	   try {
@@ -79,7 +79,7 @@ public class AsyncImageLoader {
 		options.inPreferredConfig = Bitmap.Config.RGB_565;   
 		options.inPurgeable = true;  
 		options.inInputShareable = true;  
-		options.inSampleSize = 2;
+		//options.inSampleSize = 2;
 		Bitmap bitmap = BitmapFactory.decodeStream(imageStream,null,options);
        return bitmap;  
    }  
