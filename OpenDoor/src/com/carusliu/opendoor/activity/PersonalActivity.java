@@ -46,7 +46,7 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 	private int prizeFlag = 0;
 	private int infoFlag = 0;
 	private int pwdFlag = 0;
-	
+	private int modifyInfoFlag = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +75,7 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		tvUserPhone = (TextView)findViewById(R.id.user_phone);
 		tvUserEmail = (TextView)findViewById(R.id.user_email);
 		etUserName =(EditText)findViewById(R.id.et_user_name);
-		etUserGender =(EditText)findViewById(R.id.et_user_gender);
+		//etUserGender =(EditText)findViewById(R.id.et_user_gender);
 		etUserPhone =(EditText)findViewById(R.id.et_user_phone);
 		etUserEmail =(EditText)findViewById(R.id.et_user_email);
 		
@@ -94,13 +94,105 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		modifyInfo.setOnClickListener(this);
 	}
     
-    public void getUserInfoRequest(){
+    public void modifyInfoRequest(){
+    	String userName = etUserName.getText().toString().trim();
+    	String gender = etUserGender.getText().toString().trim();
+    	String userPhone = etUserPhone.getText().toString().trim();
+    	String userEmail = etUserEmail.getText().toString().trim();
+    	
+    	if(userName.equals("")){
+			Toast.makeText(this, "姓名不能为空", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(!userPhone.matches("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$")){
+			Toast.makeText(this, "请填写正确的手机号", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(!userPhone.matches("^([a-z0-9A-Z]+[-|//.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?//.)+[a-zA-Z]{2,}$")){
+			Toast.makeText(this, "请填写正确的邮箱", Toast.LENGTH_SHORT).show();
+			return;
+		}
+    	
     	HashMap<String, String> data = new HashMap<String, String>();
     	String userId = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID,
 				"0");
-    	//data.put(SysConstants.USER_ID, userId);
+    	data.put(SysConstants.USER_ID, userId);
+    	data.put(SysConstants.USER_NAME, userName);
+    	data.put(SysConstants.USER_GENDER, gender);
+    	data.put(SysConstants.USER_PHONE, userPhone);
+    	data.put(SysConstants.USER_EMAIL, userEmail);
+    	
 		NBRequest nbRequest = new NBRequest();
-		nbRequest.sendRequest(m_handler, SysConstants.USER_INFO_URL, data,
+		nbRequest.sendRequest(m_handler, SysConstants.MODIFY_PWD_URL, data,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+    }
+    
+    public void showInfoView(){
+    	tvUserName.setVisibility(View.VISIBLE);
+		tvUserGender.setVisibility(View.VISIBLE);
+		tvUserPhone.setVisibility(View.VISIBLE);
+		tvUserEmail.setVisibility(View.VISIBLE);
+		
+		tvUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
+		tvUserGender.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_GENDER, ""));
+		tvUserPhone.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PHONE, ""));
+		tvUserEmail.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_EMAIL, ""));
+		
+		etUserName.setVisibility(View.GONE);
+		etUserGender.setVisibility(View.GONE);
+		etUserPhone.setVisibility(View.GONE);
+		etUserEmail.setVisibility(View.GONE);
+		
+    }
+    public void showModifyView(){
+    	
+		etUserName.setVisibility(View.VISIBLE);
+		etUserGender.setVisibility(View.VISIBLE);
+		etUserPhone.setVisibility(View.VISIBLE);
+		etUserEmail.setVisibility(View.VISIBLE);
+		
+		etUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
+		etUserGender.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_GENDER, ""));
+		etUserPhone.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PHONE, ""));
+		etUserEmail.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_EMAIL, ""));
+		
+		tvUserName.setVisibility(View.GONE);
+		tvUserGender.setVisibility(View.GONE);
+		tvUserPhone.setVisibility(View.GONE);
+		tvUserEmail.setVisibility(View.GONE);
+    }
+    
+    
+    public void modifyPwdRequest(){
+    	String oldPwd = etOldPwd.getText().toString().trim();
+    	String newPwd = etNewPwd.getText().toString().trim();
+    	String confirmPwd = etConfirmPwd.getText().toString().trim();
+    	
+    	if(oldPwd.equals("")){
+			Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(newPwd.length() < 6 || newPwd.length() > 16){
+			Toast.makeText(this, "密码为长度6-16位字符", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(confirmPwd.equals("")){
+			Toast.makeText(this, "请确认密码", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(!confirmPwd.equals(newPwd)){
+			Toast.makeText(this, "两次密码不一致", Toast.LENGTH_SHORT).show();
+			return;
+		}
+    	
+    	HashMap<String, String> data = new HashMap<String, String>();
+    	String userId = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID,
+				"0");
+    	data.put(SysConstants.USER_ID, userId);
+    	data.put(SysConstants.OLD_PASSWORD, oldPwd);
+    	data.put(SysConstants.USER_PASSWORD, newPwd);
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.sendRequest(m_handler, SysConstants.MODIFY_PWD_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
     }
     
@@ -170,7 +262,15 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 			}
 			break;
 		case R.id.tv_modify_info:
-			
+			if(modifyInfoFlag==0){
+				modifyInfo.setText("完成");
+				showModifyView();
+				modifyInfoFlag = 1;
+			}else{
+				modifyInfo.setText("修改");
+				showInfoView();
+				modifyInfoFlag = 0;
+			}
 			break;
 		}
 	}

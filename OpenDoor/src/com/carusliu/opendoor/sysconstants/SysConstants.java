@@ -42,33 +42,18 @@ public class SysConstants {
 	public static final int DISSMISS = SYNCLOAD + 1;
 	
 	//接口
-	public static final String REQUEST_LOGIN = "user/login";
-	
-	public static final String DOMAIN = "http://121.199.56.169:8080/zhima";
-	
-	public static final String IMAGE_CACHE = DOMAIN + "/images/";
-	/**关于URL*/
-	public static final String ABOUT_URL = DOMAIN + "/interface/about";
-	/**奖品兑换URL*/
-	public static final String EXCHANGE_URL = DOMAIN + "/interface/award_exchange";
-	/**奖品详情URL*/
-	public static final String AWARD_INFO_URL = DOMAIN + "/interface/award_info";
-	/**用户获奖列表URL*/
-	public static final String USER_AWARDS_URL = DOMAIN + "/interface/user_awards";
-	/**更多奖品URL*/
-	public static final String AWARD_LIST_URL = DOMAIN + "/interface/award_list";
 	/**获取奖品URL*/
 	public static final String TODAY_AWARDS_URL = "award/getNearAward";
+	
+	public static final String SHAKE_AWARD_URL = "/award/getMotionAward";
+	
+	public static final String DELETE_AWARD_URL = "/user/deleteAward";
+	public static final String MODIFY_PWD_URL = "/user/userModifyPassword";
+	public static final String MODIFY_INFO_URL = "/user/userModify";
 	/**用户登录URL*/
 	public static final String LOGIN_URL = "user/login";
 	/**用户注册URL*/
 	public static final String REGISTER_URL = "user/userAdd";
-	/**用户信息URL*/
-	public static final String USER_INFO_URL = DOMAIN + "/interface/user_info";
-	/**立即充值URL*/
-	public static final String RECHARGE_URL = DOMAIN + "/interface/recharge";
-	/**花几毛钱提升中奖率URL*/
-	public static final String PROMOTE_RATE_URL = DOMAIN + "/interface/promte_rate";
 
 
 	//请求参数
@@ -76,12 +61,14 @@ public class SysConstants {
 	public static final String USER_ID = "userId";
 	public static final String USER_ACCOUNT = "userAccount";
 	public static final String USER_PASSWORD = "userPassword";//0代表车保镖，1代表车立方
+	public static final String OLD_PASSWORD = "oldPassword";//0代表车保镖，1代表车立方
 	public static final String USER_NAME = "userName";
 	public static final String USER_GENDER = "userGender";
 	public static final String USER_PHONE = "userPhone";
 	public static final String USER_EMAIL = "userEmail";
 	public static final String LANTITUDE = "lat1";
 	public static final String LONGITUDE = "lng1";
+	public static final String AWARD_ID = "awardId";
 	
 
 }

@@ -38,7 +38,7 @@ public class AboutActivity extends Activity {
 			}
 		});
 		
-		WebView wv_about = (WebView) findViewById(R.id.wv_about);
+		/*WebView wv_about = (WebView) findViewById(R.id.wv_about);
 		WebSettings setting = wv_about.getSettings();
 		setting = wv_about.getSettings();
 		setting.setJavaScriptEnabled(true);
@@ -47,7 +47,7 @@ public class AboutActivity extends Activity {
 		setting.setSupportZoom(false);
 		setting.setAllowFileAccess(true);
 		//setting.setBlockNetworkImage(true);
-		wv_about.loadUrl(SysConstants.ABOUT_URL);
+		wv_about.loadUrl(SysConstants.ABOUT_URL);*/
 
 	}
 

@@ -123,13 +123,13 @@ public class MainActivity extends HWActivity implements OnClickListener {
 		//sendPrizeRequest();
 	}
 
-	public void sendPrizeRequest(){
+	/*public void sendPrizeRequest(){
 		HashMap<String, String> data = new HashMap<String, String>();
 		//data.put(SysConstants.USER_ID, "");
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.sendRequest(m_handler, SysConstants.REQUEST_LOGIN, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
-	}
+	}*/
 
 	@Override
 	public void parseResponse(NBRequest request) {

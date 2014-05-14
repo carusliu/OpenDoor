@@ -1,32 +1,39 @@
 package com.carusliu.opendoor.activity;
 
-import android.app.Activity;
+import java.util.HashMap;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.carusliu.opendoor.R;
+import com.carusliu.opendoor.modle.Prize;
+import com.carusliu.opendoor.network.NBRequest;
+import com.carusliu.opendoor.sysconstants.SysConstants;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
 
-public class PrizeDetail extends Activity implements OnClickListener {
+public class PrizeDetail extends HWActivity implements OnClickListener {
 	
 	 private TextView leftText, title, rightText;
-	 private ImageView promote_rate, shareBtn;
+	 private TextView tvPrizeUse, tvPrizeInfo, tvPrizeId, tvPrizeAddress, tvPrizePhone, tvPrizeCipher, tvPrizeProvider;
+	 private ImageView promote_rate, shareBtn, prizePic;
+	 private Prize prize;
 	 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prize_detail);
+        
+        Intent intent = getIntent();
+        if(intent!=null){
+        	prize = (Prize)intent.getSerializableExtra("prize");
+        }
         
         initView();
         
@@ -40,7 +47,17 @@ public class PrizeDetail extends Activity implements OnClickListener {
 		leftText = (TextView) findViewById(R.id.btn_left);
 		title = (TextView) findViewById(R.id.tv_center);
 		rightText = (TextView) findViewById(R.id.btn_right);
-		
+		prizePic = (ImageView)findViewById(R.id.prize_pic);
+		if(prize!=null){
+			((TextView)findViewById(R.id.tx_prize_use)).setText(prize.getUse());
+			((TextView)findViewById(R.id.prize_info)).setText(prize.getInfo());
+			((TextView)findViewById(R.id.prize_id)).setText(prize.getId());
+			((TextView)findViewById(R.id.prize_address)).setText(prize.getAddress());
+			((TextView)findViewById(R.id.prize_phone)).setText(prize.getPhone());
+			((TextView)findViewById(R.id.prize_cipher)).setText(prize.getCipher());
+			((TextView)findViewById(R.id.prize_date)).setText(prize.getStartDate());
+			((TextView)findViewById(R.id.tx_prize_provider)).setText(prize.getProvider());
+		}
 		title.setText("¡ÏΩ±¿≤");
 		leftText.setText("<∑µªÿ");
 		rightText.setText("…æ≥˝");
@@ -49,7 +66,6 @@ public class PrizeDetail extends Activity implements OnClickListener {
 		leftText.setOnClickListener(this);
 		promote_rate.setOnClickListener(this);
 		shareBtn.setOnClickListener(this);
-		
 		
 	}
     
@@ -61,6 +77,9 @@ public class PrizeDetail extends Activity implements OnClickListener {
 		case R.id.btn_left:
 			finish();
 			break;
+		case R.id.btn_right:
+			deleteAwardReuquest();
+			break;
 		case R.id.btn_share:
 			Intent intent = new Intent(PrizeDetail.this, ShareActivity.class);
 			startActivity(intent);
@@ -71,6 +90,18 @@ public class PrizeDetail extends Activity implements OnClickListener {
 		}
 		
 	}
+    
+    public void deleteAwardReuquest(){
+
+    	HashMap<String, String> data = new HashMap<String, String>();
+    	String userId = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID,
+				"0");
+    	data.put(SysConstants.USER_ID, userId);
+    	data.put(SysConstants.AWARD_ID, "");
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.sendRequest(m_handler, SysConstants.DELETE_AWARD_URL, data,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+    }
     
     public void promoteRate(){
     	

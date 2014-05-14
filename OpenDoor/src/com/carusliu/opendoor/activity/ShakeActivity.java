@@ -125,20 +125,18 @@ public class ShakeActivity extends HWActivity{
 				//解析数据更新界面
 				JSONObject jsonObject = request.getBodyJSONObject();
 				JSONArray prizeArray = jsonObject.optJSONArray("awardList");
-				for(int i=0;i<6;i++){
-					//JSONObject prizeObj = prizeArray.optJSONObject(i);
-					Prize prize = new Prize();
-					/*prize.setId(prizeObj.optString(""));
-					prize.setName(prizeObj.optString(""));
-					prize.setInfo(prizeObj.optString(""));*/
-					//prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
-					prize.setSmallPic("http://i0.sinaimg.cn/home/2014/0509/U8843P30DT20140509085453.jpg");
-					//prizeList.add(prize);
-				}
-				//异步加载图片
+				
+				//JSONObject prizeObj = prizeArray.optJSONObject(i);
+				Prize prize = new Prize();
+				/*prize.setId(prizeObj.optString(""));
+				prize.setName(prizeObj.optString(""));
+				prize.setInfo(prizeObj.optString(""));*/
+				//prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
+				prize.setSmallPic("http://i0.sinaimg.cn/home/2014/0509/U8843P30DT20140509085453.jpg");
 				
 				progressDialog.dismiss();
 				Intent intent = new Intent();
+				intent.putExtra("prize", prize);
             	intent.setClass(ShakeActivity.this, PrizeDetail.class);
             	startActivity(intent);
 				

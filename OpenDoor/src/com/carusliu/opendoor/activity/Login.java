@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ public class Login extends HWActivity implements OnClickListener{
 	private EditText etPwd; // ÃÜÂë±à¼­¿ò
 	private TextView leftText, title, rightText;
 	private Button loginBtn, registerBtn;
+	private CheckBox rememberMe;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +43,10 @@ public class Login extends HWActivity implements OnClickListener{
 		etPwd = (EditText) findViewById(R.id.et_login_pass);
 		loginBtn = (Button) findViewById(R.id.btn_login);
 		registerBtn = (Button)findViewById(R.id.btn_register);
+		rememberMe = (CheckBox)findViewById(R.id.chb_login_remember);
+		
+		etName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ACCOUNT,""));
+		etPwd.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PWD,""));
 		
 		title.setText("µÇÂ¼");
 		leftText.setText("<·µ»Ø");
@@ -74,17 +80,31 @@ public class Login extends HWActivity implements OnClickListener{
 		data.put(SysConstants.USER_ACCOUNT, userName);
 		data.put(SysConstants.USER_PASSWORD, MD5Util.md5(userPwd));
 		NBRequest nbRequest = new NBRequest();
-		nbRequest.sendRequest(m_handler, SysConstants.REQUEST_LOGIN, data,
+		nbRequest.sendRequest(m_handler, SysConstants.LOGIN_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
     }
     
     @Override
 	public void parseResponse(NBRequest request) {
 		// TODO Auto-generated method stub
-    	System.out.println(request.getCode());
+    	//System.out.println(request.getCode());
     	if(request.getCode().equals(SysConstants.ZERO)){
 	    	JSONObject jsonObject = request.getBodyJSONObject();
-	    	System.out.println(jsonObject.toString());
+	    	//System.out.println(jsonObject.toString());
+	    	JSONObject userInfoObj = jsonObject.optJSONObject("userInfo");
+	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_ID, userInfoObj.optString("userId"));
+	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_NAME, userInfoObj.optString("userName"));
+	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_GENDER, userInfoObj.optString("userSax"));
+	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_PHONE, userInfoObj.optString("userPhone"));
+	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_EMAIL, userInfoObj.optString("userEmail"));
+	    	
+	    	if(rememberMe.isChecked()){
+	    		SharedPreferencesHelper.putString(SharedPreferencesKey.USER_ACCOUNT, userInfoObj.optString("userAccount"));
+	    		SharedPreferencesHelper.putString(SharedPreferencesKey.USER_PWD, etPwd.getText().toString());
+	    	}else{
+	    		SharedPreferencesHelper.putString(SharedPreferencesKey.USER_ACCOUNT, "");
+	    		SharedPreferencesHelper.putString(SharedPreferencesKey.USER_PWD, "");
+	    	}
 	    	
 	    	SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
 	        Intent intent = new Intent();
@@ -93,6 +113,8 @@ public class Login extends HWActivity implements OnClickListener{
 	    	
 	        Toast.makeText(getApplicationContext(), "µÇÂ¼³É¹¦", Toast.LENGTH_SHORT).show();
 	        finish();
+    	}else{
+    		Toast.makeText(getApplicationContext(), "µÇÂ¼Ê§°Ü", Toast.LENGTH_SHORT).show();
     	}
 	}
     
