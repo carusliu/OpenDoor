@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.carusliu.opendoor.R;
 import com.carusliu.opendoor.application.AppApplication;
 import com.carusliu.opendoor.modle.Prize;
@@ -31,7 +30,7 @@ import com.carusliu.opendoor.sysconstants.SysConstants;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
 
-public class PersonalActivity extends HWActivity implements OnClickListener, OnItemClickListener{
+public class PersonalActivity extends HWActivity implements OnClickListener{
 	private TextView leftText, title, rightText;
 	private View prizeItem, infoItem, pwdItem, prizeView, infoView, pwdView;
 	private List<Prize> prizeList = new ArrayList<Prize>();
@@ -39,14 +38,15 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 	private BaseAdapter awardListAdapter;
 	private ImageButton userPhoto;
 	private TextView tvUserName, tvUserGender, tvUserPhone, tvUserEmail;
-	private EditText etUserName, etUserGender, etUserPhone, etUserEmail, etOldPwd,etNewPwd,etConfirmPwd;
-	private TextView modifyInfo;
+	private EditText etUserName,  etUserPhone, etUserEmail, etOldPwd,etNewPwd,etConfirmPwd;
+	private TextView etUserGender,modifyInfo;
 	private ImageView imgPrize,imgInfo,imgPwd;
 	private Button modifyInfoBtn, modifyPwdBtn;
 	private int prizeFlag = 0;
 	private int infoFlag = 0;
 	private int pwdFlag = 0;
 	private int modifyInfoFlag = 0;
+	private String gender = "0";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,14 +75,21 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		tvUserPhone = (TextView)findViewById(R.id.user_phone);
 		tvUserEmail = (TextView)findViewById(R.id.user_email);
 		etUserName =(EditText)findViewById(R.id.et_user_name);
-		//etUserGender =(EditText)findViewById(R.id.et_user_gender);
+		etUserGender =(TextView)findViewById(R.id.et_user_gender);
 		etUserPhone =(EditText)findViewById(R.id.et_user_phone);
 		etUserEmail =(EditText)findViewById(R.id.et_user_email);
+		modifyInfoBtn = (Button)findViewById(R.id.btn_modify_info);
 		
 		etOldPwd =(EditText)findViewById(R.id.et_old_pwd);
 		etNewPwd =(EditText)findViewById(R.id.et_new_pwd);
 		etConfirmPwd =(EditText)findViewById(R.id.et_confirm_pwd);
+		modifyPwdBtn = (Button)findViewById(R.id.btn_modify_pwd);
 		
+		//1.初始化个人信息
+		tvUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
+		setGender();
+		tvUserPhone.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PHONE, ""));
+		tvUserEmail.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_EMAIL, ""));
 		title.setText("个人中心");
 		leftText.setText("<返回");
 		rightText.setText("注销>");
@@ -92,11 +99,13 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		infoItem.setOnClickListener(this);
 		pwdItem.setOnClickListener(this);
 		modifyInfo.setOnClickListener(this);
+		modifyInfoBtn.setOnClickListener(this);
+		modifyPwdBtn.setOnClickListener(this);
+		etUserGender.setOnClickListener(this);
 	}
     
     public void modifyInfoRequest(){
     	String userName = etUserName.getText().toString().trim();
-    	String gender = etUserGender.getText().toString().trim();
     	String userPhone = etUserPhone.getText().toString().trim();
     	String userEmail = etUserEmail.getText().toString().trim();
     	
@@ -134,7 +143,7 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		tvUserEmail.setVisibility(View.VISIBLE);
 		
 		tvUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
-		tvUserGender.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_GENDER, ""));
+		setGender();
 		tvUserPhone.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PHONE, ""));
 		tvUserEmail.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_EMAIL, ""));
 		
@@ -142,7 +151,7 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		etUserGender.setVisibility(View.GONE);
 		etUserPhone.setVisibility(View.GONE);
 		etUserEmail.setVisibility(View.GONE);
-		
+		modifyInfoBtn.setVisibility(View.GONE);
     }
     public void showModifyView(){
     	
@@ -150,9 +159,10 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 		etUserGender.setVisibility(View.VISIBLE);
 		etUserPhone.setVisibility(View.VISIBLE);
 		etUserEmail.setVisibility(View.VISIBLE);
+		modifyInfoBtn.setVisibility(View.VISIBLE);
 		
 		etUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
-		etUserGender.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_GENDER, ""));
+		setGender();
 		etUserPhone.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PHONE, ""));
 		etUserEmail.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_EMAIL, ""));
 		
@@ -207,8 +217,9 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 	        /*Intent intent = new Intent();
 	        intent.setClass(Login.this,MainActivity.class);
 	        startActivity(intent);*/
-	    	
-	        Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
+	    	//1.更改后的信息存起来
+	    	//2.更新信息界面
+	        Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
 	        finish();
     	}
 	}
@@ -272,13 +283,19 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
 				modifyInfoFlag = 0;
 			}
 			break;
+		case R.id.btn_modify_info:
+			modifyInfoRequest();
+			
+			break;
+		case R.id.btn_modify_pwd:
+			modifyPwdRequest();
+			
+			break;
+		case R.id.et_user_gender:
+			showGenderDialog();
+			
+			break;
 		}
-	}
-    
-    @Override
-	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-		//打开兑换界面
-		
 	}
     
     private void showExitDialog() {
@@ -306,5 +323,50 @@ public class PersonalActivity extends HWActivity implements OnClickListener, OnI
                     }
                 }).create(); // 创建对话框
         alertDialog.show(); // 显示对话框
+    }
+    
+    private void showGenderDialog(){
+    	int sex_item = 0;
+    	if("1".equals(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_GENDER, "0")));{
+    		sex_item = 1;
+    	}
+	    
+		final String[] mList = { "男", "女" };
+		
+		AlertDialog.Builder sinChosDia = new AlertDialog.Builder(
+				PersonalActivity.this);
+		sinChosDia.setTitle("选择性别");
+		sinChosDia.setSingleChoiceItems(mList, sex_item,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if(which==0){
+							gender = "0";
+							etUserGender.setText("男");
+						}else{
+							etUserGender.setText("女");
+							gender = "1";
+						}
+					}
+				});
+		sinChosDia.setPositiveButton("确定",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						
+						
+					}
+				});
+		sinChosDia.create().show();
+    }
+    private void setGender(){
+    String genderStr = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_GENDER, "0");
+	if("0".equals(genderStr)){
+		tvUserGender.setText("男");
+		etUserGender.setText("男");
+	}else{
+		tvUserGender.setText("女");
+		etUserGender.setText("女");
+	}
     }
 }

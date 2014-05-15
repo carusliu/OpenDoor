@@ -504,14 +504,14 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 			startActivity(intent);
 			break;
 		case R.id.btn_right:
-			if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
+			/*if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
 					"0").equals("0")) {
 				
 				intent.setClass(Whatsnew.this, Login.class);
 			} else {
 				intent.setClass(Whatsnew.this, PersonalActivity.class);
-			}
-			
+			}*/
+			intent.setClass(Whatsnew.this, PersonalActivity.class);
 			startActivity(intent);
 			break;
 		case R.id.startBtn:
