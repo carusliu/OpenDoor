@@ -88,7 +88,8 @@
             android:layout_marginTop="10dp"
             android:layout_alignLeft="@+id/et_login_pass"
             android:layout_below="@+id/et_login_pass"
-			android:button="@drawable/checkbox"/>"
+            android:checked="true"
+			android:button="@drawable/checkbox"/>
         <Button
             android:id="@+id/btn_login"
             android:layout_width="60dp"

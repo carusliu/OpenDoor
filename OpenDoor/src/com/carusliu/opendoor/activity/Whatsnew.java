@@ -284,6 +284,7 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 		exacuteSuperSwitchTask();
 		
 		progressDialog = new ProgressDialog(this);
+		progressDialog.setCanceledOnTouchOutside(false);
 		progressDialog.setMessage("正在获取奖品信息，请稍后...");
 		if(isOnline()){
 			progressDialog.show();
@@ -311,13 +312,19 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 				JSONObject jsonObject = request.getBodyJSONObject();
 				JSONArray prizeArray = jsonObject.optJSONArray("awardList");
 				for(int i=0;i<6;i++){
-					//JSONObject prizeObj = prizeArray.optJSONObject(i);
+					JSONObject prizeObj = prizeArray.optJSONObject(i);
 					Prize prize = new Prize();
-					/*prize.setId(prizeObj.optString(""));
+					prize.setId(prizeObj.optString("id"));
+					prize.setNumber(prizeObj.optString("awardNumber"));
 					prize.setName(prizeObj.optString(""));
-					prize.setInfo(prizeObj.optString(""));*/
-					//prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
-					prize.setSmallPic("http://i0.sinaimg.cn/home/2014/0509/U8843P30DT20140509085453.jpg");
+					prize.setInfo(prizeObj.optString("awardInfo"));
+					prize.setAddress(prizeObj.optString("awardAddress"));
+					prize.setCipher(prizeObj.optString("awardSecret"));
+					prize.setProvider(prizeObj.optString("awardProvide"));
+					prize.setStartDate(prizeObj.optString("awardStart")+"至"+prizeObj.optString("awardEnd"));
+					prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
+					prize.setPhone(prizeObj.optString("awardPhone"));
+					//prize.setSmallPic("http://i0.sinaimg.cn/home/2014/0509/U8843P30DT20140509085453.jpg");
 					prizeList.add(prize);
 				}
 				//异步加载图片
@@ -504,18 +511,21 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 			startActivity(intent);
 			break;
 		case R.id.btn_right:
-			/*if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
+			if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
 					"0").equals("0")) {
 				
 				intent.setClass(Whatsnew.this, Login.class);
 			} else {
 				intent.setClass(Whatsnew.this, PersonalActivity.class);
-			}*/
-			intent.setClass(Whatsnew.this, PersonalActivity.class);
+			}
+			//intent.setClass(Whatsnew.this, PersonalActivity.class);
 			startActivity(intent);
 			break;
 		case R.id.startBtn:
 			intent.setClass(Whatsnew.this, ShakeActivity.class);
+			if(prizeList.size()!=0){
+				intent.putExtra("prize", prizeList.get(0));
+			}
 			startActivity(intent);
 			break;
 		}

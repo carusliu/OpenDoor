@@ -13,6 +13,13 @@ public class Prize implements Serializable{
 	private String address;
 	private String phone;
 	private String cipher;
+	private String number;
+	public String getNumber() {
+		return number;
+	}
+	public void setNumber(String number) {
+		this.number = number;
+	}
 	public String getStartDate() {
 		return startDate;
 	}

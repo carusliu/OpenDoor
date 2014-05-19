@@ -25,7 +25,7 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 	private TextView leftText, title, rightText;
 	private EditText etUserAccount, etPwd, etConfirmPwd, etUserName, etUserPhone, etUserEmail;
 	private RadioGroup genderRadio;
-	private String gender;
+	private String gender = "0";
 	private Button registerBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +82,7 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
     	String userPhone  = etUserPhone.getText().toString().trim();
     	String userEmail  = etUserEmail.getText().toString().trim();
 
-    	if(!userAccount.matches("^([\\w+\\.]\\w+@[\\w+\\.]+\\w+|1[3568]\\d{9})$")){
+    	if(!userAccount.matches("^([\\w+\\.]\\w+@[\\w+\\.]+\\w+|1[35678]\\d{9})$")){
 			Toast.makeText(this, "账号必须为正确的手机号和邮箱", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -107,20 +107,20 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 			Toast.makeText(this, "姓名不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if(!userPhone.matches("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$")){
+		if(!userPhone.matches("^(13|15|17|18)\\d{9}$")){
 			Toast.makeText(this, "请填写正确的手机号", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if(!userPhone.matches("^([a-z0-9A-Z]+[-|//.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?//.)+[a-zA-Z]{2,}$")){
+		if(!userEmail.matches("^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")){
 			Toast.makeText(this, "请填写正确的邮箱", Toast.LENGTH_SHORT).show();
 			return;
 		}
     	HashMap<String, String> data = new HashMap<String, String>();
 		data.put(SysConstants.USER_ACCOUNT, userAccount);
-		data.put(SysConstants.USER_PASSWORD, MD5Util.md5(userPwd));
+		data.put(SysConstants.USER_PASSWORD, userPwd);
 		data.put(SysConstants.USER_NAME, userName);
 		data.put(SysConstants.USER_GENDER, gender);
-		data.put(SysConstants.USER_PHONE, userPwd);
+		data.put(SysConstants.USER_PHONE, userPhone);
 		data.put(SysConstants.USER_EMAIL, userEmail);
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.sendRequest(m_handler, SysConstants.REGISTER_URL, data,
@@ -132,14 +132,14 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 		// TODO Auto-generated method stub
     	System.out.println(request.getCode());
     	if(request.getCode().equals(SysConstants.ZERO)){
-	    	/*JSONObject jsonObject = request.getBodyJSONObject();
-	    	System.out.println(jsonObject.toString());*/
-	    	SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
+	    	//JSONObject jsonObject = request.getBodyJSONObject();
+	    	//System.out.println(jsonObject.toString());
+	    	//SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
 	    	
-	    	Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-			startActivity(intent);
+	    	//Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+			//startActivity(intent);
 			Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
-			AppApplication.getInstance().applicationExit();
+			//AppApplication.getInstance().applicationExit();
 			finish();
     	}else{
     		Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();

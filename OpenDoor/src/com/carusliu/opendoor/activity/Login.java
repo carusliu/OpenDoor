@@ -78,7 +78,7 @@ public class Login extends HWActivity implements OnClickListener{
     	
     	HashMap<String, String> data = new HashMap<String, String>();
 		data.put(SysConstants.USER_ACCOUNT, userName);
-		data.put(SysConstants.USER_PASSWORD, MD5Util.md5(userPwd));
+		data.put(SysConstants.USER_PASSWORD, userPwd);
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.sendRequest(m_handler, SysConstants.LOGIN_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
@@ -92,7 +92,7 @@ public class Login extends HWActivity implements OnClickListener{
 	    	JSONObject jsonObject = request.getBodyJSONObject();
 	    	//System.out.println(jsonObject.toString());
 	    	JSONObject userInfoObj = jsonObject.optJSONObject("userInfo");
-	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_ID, userInfoObj.optString("userId"));
+	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_ID, userInfoObj.optString("id"));
 	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_NAME, userInfoObj.optString("userName"));
 	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_GENDER, userInfoObj.optString("userSax"));
 	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_PHONE, userInfoObj.optString("userPhone"));
@@ -108,7 +108,7 @@ public class Login extends HWActivity implements OnClickListener{
 	    	
 	    	SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
 	        Intent intent = new Intent();
-	        intent.setClass(Login.this,MainActivity.class);
+	        intent.setClass(Login.this,PersonalActivity.class);
 	        startActivity(intent);
 	    	
 	        Toast.makeText(getApplicationContext(), "µÇÂ¼³É¹¦", Toast.LENGTH_SHORT).show();

@@ -204,6 +204,7 @@
             android:layout_below="@+id/et_user_gender"
             android:layout_marginLeft="60dp"
             android:layout_marginTop="5dp"
+            android:inputType="phone"
             android:layout_alignBaseline="@+id/tx_phone"
             android:background="@drawable/textbox2"
             android:visibility="gone" />
@@ -216,6 +217,7 @@
             android:layout_below="@+id/et_user_phone"
             android:layout_marginLeft="60dp"
             android:layout_marginTop="5dp"
+            android:inputType="textEmailAddress"
             android:layout_alignBaseline="@+id/tx_email"
             android:background="@drawable/textbox2"
             android:visibility="gone"/>
@@ -304,6 +306,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/tx_old_pwd"
             android:layout_marginLeft="80dp"
+            android:inputType="textPassword"
             android:background="@drawable/textbox2" />
 
         <EditText
@@ -313,6 +316,7 @@
             android:layout_alignBaseline="@+id/tx_new_pwd"
             android:layout_below="@+id/et_old_pwd"
             android:layout_marginLeft="80dp"
+            android:inputType="textPassword"
             android:background="@drawable/textbox2" />
 
         <EditText
@@ -322,6 +326,7 @@
             android:layout_alignBaseline="@+id/tx_new_pwd2"
             android:layout_below="@+id/et_new_pwd"
             android:layout_marginLeft="80dp"
+            android:inputType="textPassword"
             android:background="@drawable/textbox2" />
         
         <Button 

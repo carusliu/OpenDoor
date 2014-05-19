@@ -41,6 +41,8 @@ import com.carusliu.opendoor.modle.Prize;
 import com.carusliu.opendoor.network.NBRequest;
 import com.carusliu.opendoor.sysconstants.SysConstants;
 import com.carusliu.opendoor.tool.AsyncImageLoader.ImageCallback;
+import com.carusliu.opendoor.tool.SharedPreferencesHelper;
+import com.carusliu.opendoor.tool.SharedPreferencesKey;
 
 
 public class ShakeActivity extends HWActivity{
@@ -55,13 +57,18 @@ public class ShakeActivity extends HWActivity{
 	private Button mDrawerBtn;
 	private AnimationDrawable anim;
 	private ProgressDialog progressDialog;
+	private Prize defaultPrize;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);	
 		setContentView(R.layout.shake_activity);
 		//drawerSet ();//设置  drawer监听    切换 按钮的方向
-		
+		Intent intent = getIntent();
+        if(intent!=null){
+        	defaultPrize = (Prize)intent.getSerializableExtra("prize");
+        }
+        
 		mVibrator = (Vibrator)getApplication().getSystemService(VIBRATOR_SERVICE);
 		//ImageView shakeImage = (ImageView)findViewById(R.id.shakeBg);
 		anim = (AnimationDrawable)findViewById(R.id.shakeBg).getBackground();
@@ -92,14 +99,30 @@ public class ShakeActivity extends HWActivity{
 					public void run(){
 						/*Toast.makeText(getApplicationContext(),
 							     "未摇中任何奖品", 10).show();*/
-						progressDialog = new ProgressDialog(ShakeActivity.this);
-						progressDialog.setMessage("正在获取奖品信息，请稍后...");
-						if(isOnline()){
-							progressDialog.show();
-							sendPrizeRequest();
-						}else{
-							Toast.makeText(ShakeActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
-						}
+							if(isOnline()){
+								
+								if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
+										"0").equals("0")) {
+									
+									Intent intent = new Intent();
+									intent.putExtra("prize", defaultPrize);
+					            	intent.setClass(ShakeActivity.this, PrizeDetail.class);
+					            	startActivity(intent);
+								} else {
+									progressDialog = new ProgressDialog(ShakeActivity.this);
+									progressDialog.setCanceledOnTouchOutside(false);
+									progressDialog.setMessage("正在获取奖品信息，请稍后...");
+									if(isOnline()){
+										progressDialog.show();
+										sendPrizeRequest();
+									}else{
+										Toast.makeText(ShakeActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
+									}
+								}
+							}else{
+								Toast.makeText(ShakeActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
+							}
+						
 					    mVibrator.cancel();
 					    anim.stop();
 						mShakeListener.start();
@@ -110,11 +133,10 @@ public class ShakeActivity extends HWActivity{
    }
 	public void sendPrizeRequest(){
 		HashMap<String, String> data = new HashMap<String, String>();
-		data.put(SysConstants.LANTITUDE, "140");
-		data.put(SysConstants.LONGITUDE, "39");
+		data.put(SysConstants.USER_ID, SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID, ""));
 		NBRequest nbRequest = new NBRequest();
 		
-		nbRequest.sendRequest(m_handler, SysConstants.TODAY_AWARDS_URL, data,
+		nbRequest.sendRequest(m_handler, SysConstants.SHAKE_AWARD_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
 
@@ -124,15 +146,20 @@ public class ShakeActivity extends HWActivity{
 				
 				//解析数据更新界面
 				JSONObject jsonObject = request.getBodyJSONObject();
-				JSONArray prizeArray = jsonObject.optJSONArray("awardList");
-				
-				//JSONObject prizeObj = prizeArray.optJSONObject(i);
+				System.out.println(jsonObject.toString());
+				JSONObject prizeObj = jsonObject.optJSONArray("awardList").optJSONObject(0);
 				Prize prize = new Prize();
-				/*prize.setId(prizeObj.optString(""));
+				prize.setId(prizeObj.optString("id"));
+				prize.setNumber(prizeObj.optString("awardNumber"));
 				prize.setName(prizeObj.optString(""));
-				prize.setInfo(prizeObj.optString(""));*/
-				//prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
-				prize.setSmallPic("http://i0.sinaimg.cn/home/2014/0509/U8843P30DT20140509085453.jpg");
+				prize.setInfo(prizeObj.optString("awardInfo"));
+				prize.setAddress(prizeObj.optString("awardAddress"));
+				prize.setCipher(prizeObj.optString("awardSecret"));
+				prize.setProvider(prizeObj.optString("awardProvide"));
+				prize.setStartDate(prizeObj.optString("awardStart")+"至"+prizeObj.optString("awardEnd"));
+				prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
+				prize.setPhone(prizeObj.optString("awardPhone"));
+				//prize.setSmallPic("http://i0.sinaimg.cn/home/2014/0509/U8843P30DT20140509085453.jpg");
 				
 				progressDialog.dismiss();
 				Intent intent = new Intent();

@@ -16,12 +16,13 @@
 
         <ScrollView
             android:layout_width="fill_parent"
-            android:layout_height="match_parent" 
-            android:layout_marginBottom="45dp">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="45dp" >
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
 
                 <ImageView
                     android:id="@+id/prize_pic"
@@ -30,162 +31,173 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/new_l_2" />
 
-                <RelativeLayout
-                    android:id="@+id/rv_person_info"
+                <TextView
+                    android:id="@+id/tx_prize_use"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="15dp"
+                    android:text="抵用现金附送物品"
+                    android:textColor="@color/hint_blue"
+                    android:textSize="25sp" />
+
+                <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/prize_pic" >
-
-                    <TextView
-                        android:id="@+id/tx_prize_use"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="15dp"
-                        android:text="抵用现金附送物品"
-                        android:textColor="@color/hint_blue"
-                        android:textSize="25sp" />
+                    android:orientation="horizontal" >
 
                     <TextView
                         android:id="@+id/tx_prize_info"
                         style="@style/pernal_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tx_prize_use"
                         android:layout_marginLeft="20dp"
                         android:text="奖励说明：" />
-
-                    <TextView
-                        android:id="@+id/tx_prize_id"
-                        style="@style/pernal_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tx_prize_info"
-                        android:layout_marginLeft="20dp"
-                        android:text="奖品编号：" />
-
-                    <TextView
-                        android:id="@+id/tx_prize_address"
-                        style="@style/pernal_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tx_prize_id"
-                        android:layout_marginLeft="20dp"
-                        android:text="地址：" />
-
-                    <TextView
-                        android:id="@+id/tx_prize_phone"
-                        style="@style/pernal_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tx_prize_address"
-                        android:layout_marginLeft="20dp"
-                        android:text="联系电话：" />
-
-                    <TextView
-                        android:id="@+id/tx_prize_date"
-                        style="@style/pernal_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tx_prize_phone"
-                        android:layout_marginLeft="20dp"
-                        android:text="有效期限：" />
-
-                    <TextView
-                        android:id="@+id/tx_prize_cipher"
-                        style="@style/pernal_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tx_prize_date"
-                        android:layout_marginLeft="20dp"
-                        android:text="兑奖暗号：" />
 
                     <TextView
                         android:id="@+id/prize_info"
                         style="@style/pernal_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tx_prize_use"
-                        android:layout_toRightOf="@+id/tx_prize_info"
                         android:text="说明" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tx_prize_id"
+                        style="@style/pernal_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="奖品编号：" />
 
                     <TextView
                         android:id="@+id/prize_id"
                         style="@style/pernal_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/prize_info"
-                        android:layout_toRightOf="@+id/tx_prize_id"
                         android:text="ID" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tx_prize_address"
+                        style="@style/pernal_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="地址：" />
 
                     <TextView
                         android:id="@+id/prize_address"
                         style="@style/pernal_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/prize_id"
-                        android:layout_toRightOf="@+id/tx_prize_address"
                         android:text="地址" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tx_prize_phone"
+                        style="@style/pernal_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="联系电话：" />
 
                     <TextView
                         android:id="@+id/prize_phone"
                         style="@style/pernal_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/prize_address"
-                        android:layout_toRightOf="@+id/tx_prize_phone"
                         android:text="电话" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tx_prize_date"
+                        style="@style/pernal_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="有效期限：" />
+
                     <TextView
                         android:id="@+id/prize_date"
                         style="@style/pernal_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/prize_phone"
-                        android:layout_toRightOf="@+id/tx_prize_date"
                         android:text="期限" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tx_prize_cipher"
+                        style="@style/pernal_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="兑奖暗号：" />
+
                     <TextView
                         android:id="@+id/prize_cipher"
                         style="@style/pernal_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/prize_date"
-                        android:layout_toRightOf="@+id/tx_prize_cipher"
                         android:text="暗号" />
+                </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tx_prize_provider"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tx_prize_cipher"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/hint_blue"
-                        android:padding="5dp"
-                        android:text="本奖品由武汉黄鹤楼餐饮集团提供"
-                        android:textColor="@color/white"
-                        android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/tx_prize_provider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/hint_blue"
+                    android:padding="5dp"
+                    android:text="本奖品由武汉黄鹤楼餐饮集团提供"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
 
-                    <ImageView
-                        android:id="@+id/btn_promote_rate"
-                        android:layout_width="200dp"
-                        android:layout_height="25dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/tx_prize_provider"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/try_money" 
-                        android:layout_marginBottom="10dp"/>
-                </RelativeLayout>
-            </RelativeLayout>
+                <ImageView
+                    android:id="@+id/btn_promote_rate"
+                    android:layout_width="200dp"
+                    android:layout_height="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="20dp"
+                    android:scaleType="fitXY"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/try_money" />
+            </LinearLayout>
         </ScrollView>
-
-        <ImageView
-            android:id="@+id/btn_share"
-            android:layout_width="fill_parent"
-            android:layout_height="45dp"
-            android:layout_alignParentBottom="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/share" />
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/btn_share"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/share" />
 
 </RelativeLayout>

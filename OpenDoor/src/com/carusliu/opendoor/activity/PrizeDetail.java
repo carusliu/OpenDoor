@@ -5,18 +5,22 @@ import java.util.HashMap;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.carusliu.opendoor.R;
 import com.carusliu.opendoor.modle.Prize;
 import com.carusliu.opendoor.network.NBRequest;
 import com.carusliu.opendoor.sysconstants.SysConstants;
+import com.carusliu.opendoor.tool.AsyncImageLoader;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
+import com.carusliu.opendoor.tool.AsyncImageLoader.ImageCallback;
 
 public class PrizeDetail extends HWActivity implements OnClickListener {
 	
@@ -24,7 +28,9 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 	 private TextView tvPrizeUse, tvPrizeInfo, tvPrizeId, tvPrizeAddress, tvPrizePhone, tvPrizeCipher, tvPrizeProvider;
 	 private ImageView promote_rate, shareBtn, prizePic;
 	 private Prize prize;
-	 
+	 AsyncImageLoader asyncImageLoader ;
+	 private static final int CODE_BALANCE = 3;
+	 private static final int CODE_DELETE = 4;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +41,10 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
         	prize = (Prize)intent.getSerializableExtra("prize");
         }
         
+        if(prize==null){
+        	prize = new Prize();
+        }
+        asyncImageLoader = new AsyncImageLoader(this);
         initView();
         
     }
@@ -49,9 +59,9 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 		rightText = (TextView) findViewById(R.id.btn_right);
 		prizePic = (ImageView)findViewById(R.id.prize_pic);
 		if(prize!=null){
-			((TextView)findViewById(R.id.tx_prize_use)).setText(prize.getUse());
+			((TextView)findViewById(R.id.tx_prize_use)).setText("抵用现金附送物品");
 			((TextView)findViewById(R.id.prize_info)).setText(prize.getInfo());
-			((TextView)findViewById(R.id.prize_id)).setText(prize.getId());
+			((TextView)findViewById(R.id.prize_id)).setText(prize.getNumber());
 			((TextView)findViewById(R.id.prize_address)).setText(prize.getAddress());
 			((TextView)findViewById(R.id.prize_phone)).setText(prize.getPhone());
 			((TextView)findViewById(R.id.prize_cipher)).setText(prize.getCipher());
@@ -66,7 +76,11 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 		leftText.setOnClickListener(this);
 		promote_rate.setOnClickListener(this);
 		shareBtn.setOnClickListener(this);
-		
+		asyncImageLoader.loadBitmap(prize.getSmallPic(), new ImageCallback() {  
+			public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  
+				prizePic.setImageBitmap(imageDrawable);
+			}  
+		});
 	}
     
     @Override
@@ -97,11 +111,35 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
     	String userId = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID,
 				"0");
     	data.put(SysConstants.USER_ID, userId);
-    	data.put(SysConstants.AWARD_ID, "");
+    	data.put(SysConstants.AWARD_ID, prize.getId());
 		NBRequest nbRequest = new NBRequest();
+		nbRequest.setRequestTag(CODE_DELETE);		
 		nbRequest.sendRequest(m_handler, SysConstants.DELETE_AWARD_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
     }
+    
+    @Override
+   	public void parseResponse(NBRequest request) {
+   		// TODO Auto-generated method stub
+       	System.out.println(request.getCode());
+       	if(request.getCode().equals(SysConstants.ZERO)){
+
+       		switch(request.getRequestTag()){
+       		case CODE_BALANCE:
+       		
+       			break;
+       			
+       		case CODE_DELETE:
+       			Toast.makeText(getApplicationContext(), "刪除成功", Toast.LENGTH_SHORT).show();
+       	        finish();
+       			break;
+       		}
+   	        
+   	        
+       	}else{
+       		Toast.makeText(getApplicationContext(), "请求失败", Toast.LENGTH_SHORT).show();
+       	}
+   	}
     
     public void promoteRate(){
     	

@@ -45,11 +45,11 @@ public class SysConstants {
 	/**获取奖品URL*/
 	public static final String TODAY_AWARDS_URL = "award/getNearAward";
 	
-	public static final String SHAKE_AWARD_URL = "/award/getMotionAward";
+	public static final String SHAKE_AWARD_URL = "award/getMotionAward";
 	
-	public static final String DELETE_AWARD_URL = "/user/deleteAward";
-	public static final String MODIFY_PWD_URL = "/user/userModifyPassword";
-	public static final String MODIFY_INFO_URL = "/user/userModify";
+	public static final String DELETE_AWARD_URL = "user/deleteAward";
+	public static final String MODIFY_PWD_URL = "user/userModifyPassword";
+	public static final String MODIFY_INFO_URL = "user/userModify";
 	/**用户登录URL*/
 	public static final String LOGIN_URL = "user/login";
 	/**用户注册URL*/
@@ -61,7 +61,7 @@ public class SysConstants {
 	public static final String USER_ID = "userId";
 	public static final String USER_ACCOUNT = "userAccount";
 	public static final String USER_PASSWORD = "userPassword";//0代表车保镖，1代表车立方
-	public static final String OLD_PASSWORD = "oldPassword";//0代表车保镖，1代表车立方
+	public static final String NEW_PASSWORD = "newUserPassword";//0代表车保镖，1代表车立方
 	public static final String USER_NAME = "userName";
 	public static final String USER_GENDER = "userGender";
 	public static final String USER_PHONE = "userPhone";

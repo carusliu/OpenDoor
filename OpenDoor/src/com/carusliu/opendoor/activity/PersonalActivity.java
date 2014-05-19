@@ -47,6 +47,8 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 	private int pwdFlag = 0;
 	private int modifyInfoFlag = 0;
 	private String gender = "0";
+	private static final int CODE_MODIFY_INFO = 0;
+	private static final int CODE_MODIFY_PWD = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,11 +115,11 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 			Toast.makeText(this, "姓名不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if(!userPhone.matches("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$")){
+		if(!userPhone.matches("^(13|15|17|18)\\d{9}$")){
 			Toast.makeText(this, "请填写正确的手机号", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if(!userPhone.matches("^([a-z0-9A-Z]+[-|//.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?//.)+[a-zA-Z]{2,}$")){
+		if(!userEmail.matches("^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")){
 			Toast.makeText(this, "请填写正确的邮箱", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -132,46 +134,10 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
     	data.put(SysConstants.USER_EMAIL, userEmail);
     	
 		NBRequest nbRequest = new NBRequest();
-		nbRequest.sendRequest(m_handler, SysConstants.MODIFY_PWD_URL, data,
+		nbRequest.setRequestTag(CODE_MODIFY_INFO);
+		nbRequest.sendRequest(m_handler, SysConstants.MODIFY_INFO_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
     }
-    
-    public void showInfoView(){
-    	tvUserName.setVisibility(View.VISIBLE);
-		tvUserGender.setVisibility(View.VISIBLE);
-		tvUserPhone.setVisibility(View.VISIBLE);
-		tvUserEmail.setVisibility(View.VISIBLE);
-		
-		tvUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
-		setGender();
-		tvUserPhone.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PHONE, ""));
-		tvUserEmail.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_EMAIL, ""));
-		
-		etUserName.setVisibility(View.GONE);
-		etUserGender.setVisibility(View.GONE);
-		etUserPhone.setVisibility(View.GONE);
-		etUserEmail.setVisibility(View.GONE);
-		modifyInfoBtn.setVisibility(View.GONE);
-    }
-    public void showModifyView(){
-    	
-		etUserName.setVisibility(View.VISIBLE);
-		etUserGender.setVisibility(View.VISIBLE);
-		etUserPhone.setVisibility(View.VISIBLE);
-		etUserEmail.setVisibility(View.VISIBLE);
-		modifyInfoBtn.setVisibility(View.VISIBLE);
-		
-		etUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
-		setGender();
-		etUserPhone.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PHONE, ""));
-		etUserEmail.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_EMAIL, ""));
-		
-		tvUserName.setVisibility(View.GONE);
-		tvUserGender.setVisibility(View.GONE);
-		tvUserPhone.setVisibility(View.GONE);
-		tvUserEmail.setVisibility(View.GONE);
-    }
-    
     
     public void modifyPwdRequest(){
     	String oldPwd = etOldPwd.getText().toString().trim();
@@ -199,28 +165,88 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
     	String userId = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID,
 				"0");
     	data.put(SysConstants.USER_ID, userId);
-    	data.put(SysConstants.OLD_PASSWORD, oldPwd);
-    	data.put(SysConstants.USER_PASSWORD, newPwd);
+    	data.put(SysConstants.USER_PASSWORD, oldPwd);
+    	data.put(SysConstants.NEW_PASSWORD, newPwd);
 		NBRequest nbRequest = new NBRequest();
+		nbRequest.setRequestTag(CODE_MODIFY_PWD);
 		nbRequest.sendRequest(m_handler, SysConstants.MODIFY_PWD_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
     }
+    
+    public void showInfoView(){
+    	tvUserName.setVisibility(View.VISIBLE);
+		tvUserGender.setVisibility(View.VISIBLE);
+		tvUserPhone.setVisibility(View.VISIBLE);
+		tvUserEmail.setVisibility(View.VISIBLE);
+		
+		tvUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
+		setGender();
+		tvUserPhone.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PHONE, ""));
+		tvUserEmail.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_EMAIL, ""));
+		
+		etUserName.setVisibility(View.GONE);
+		etUserGender.setVisibility(View.GONE);
+		etUserPhone.setVisibility(View.GONE);
+		etUserEmail.setVisibility(View.GONE);
+		modifyInfoBtn.setVisibility(View.GONE);
+    }
+    
+    public void showModifyView(){
+    	
+		etUserName.setVisibility(View.VISIBLE);
+		etUserGender.setVisibility(View.VISIBLE);
+		etUserPhone.setVisibility(View.VISIBLE);
+		etUserEmail.setVisibility(View.VISIBLE);
+		modifyInfoBtn.setVisibility(View.VISIBLE);
+		
+		etUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
+		setGender();
+		etUserPhone.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PHONE, ""));
+		etUserEmail.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_EMAIL, ""));
+		
+		tvUserName.setVisibility(View.GONE);
+		tvUserGender.setVisibility(View.GONE);
+		tvUserPhone.setVisibility(View.GONE);
+		tvUserEmail.setVisibility(View.GONE);
+    }
+    
+    
+
     
     @Override
 	public void parseResponse(NBRequest request) {
 		// TODO Auto-generated method stub
     	System.out.println(request.getCode());
     	if(request.getCode().equals(SysConstants.ZERO)){
-	    	JSONObject jsonObject = request.getBodyJSONObject();
-	    	System.out.println(jsonObject.toString());
-	    	SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
+	    	/*JSONObject jsonObject = request.getBodyJSONObject();
+	    	System.out.println(jsonObject.toString());*/
+	    	//SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
 	        /*Intent intent = new Intent();
 	        intent.setClass(Login.this,MainActivity.class);
 	        startActivity(intent);*/
 	    	//1.更改后的信息存起来
 	    	//2.更新信息界面
-	        Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
-	        finish();
+    		switch(request.getRequestTag()){
+    		case CODE_MODIFY_INFO:
+    			SharedPreferencesHelper.putString(SharedPreferencesKey.USER_NAME, etUserName.getText().toString());
+    	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_GENDER, gender);
+    	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_PHONE, etUserPhone.getText().toString());
+    	    	SharedPreferencesHelper.putString(SharedPreferencesKey.USER_EMAIL, etUserEmail.getText().toString());
+    			Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
+    			break;
+    			
+    		case CODE_MODIFY_PWD:
+    			Toast.makeText(getApplicationContext(), "密码修改成功，请重新登录", Toast.LENGTH_SHORT).show();
+    			Intent intent = new Intent();
+    	        intent.setClass(PersonalActivity.this,Login.class);
+    	        startActivity(intent);
+    	        finish();
+    			break;
+    		}
+	        
+	        
+    	}else{
+    		Toast.makeText(getApplicationContext(), "修改失败", Toast.LENGTH_SHORT).show();
     	}
 	}
     
