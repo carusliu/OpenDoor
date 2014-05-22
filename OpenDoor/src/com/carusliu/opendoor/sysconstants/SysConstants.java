@@ -54,7 +54,8 @@ public class SysConstants {
 	public static final String LOGIN_URL = "user/login";
 	/**用户注册URL*/
 	public static final String REGISTER_URL = "user/userAdd";
-
+	public static final String ORDER_INFO_URL = "order/getOrderInfo";
+	
 
 	//请求参数
 	

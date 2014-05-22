@@ -2,6 +2,8 @@ package com.carusliu.opendoor.activity;
 
 import java.util.HashMap;
 
+import org.json.JSONObject;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,52 +23,63 @@ import com.carusliu.opendoor.tool.AsyncImageLoader;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
 import com.carusliu.opendoor.tool.AsyncImageLoader.ImageCallback;
+import com.unionpay.UPPayAssistEx;
+import com.unionpay.uppay.PayActivity;
 
 public class PrizeDetail extends HWActivity implements OnClickListener {
-	
-	 private TextView leftText, title, rightText;
-	 private TextView tvPrizeUse, tvPrizeInfo, tvPrizeId, tvPrizeAddress, tvPrizePhone, tvPrizeCipher, tvPrizeProvider;
-	 private ImageView promote_rate, shareBtn, prizePic;
-	 private Prize prize;
-	 AsyncImageLoader asyncImageLoader ;
-	 private static final int CODE_BALANCE = 3;
-	 private static final int CODE_DELETE = 4;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.prize_detail);
-        
-        Intent intent = getIntent();
-        if(intent!=null){
-        	prize = (Prize)intent.getSerializableExtra("prize");
-        }
-        
-        if(prize==null){
-        	prize = new Prize();
-        }
-        asyncImageLoader = new AsyncImageLoader(this);
-        initView();
-        
-    }
 
-    public void initView() {
-		
-		//花几毛钱提高中奖率事件绑定
+	private TextView leftText, title, rightText;
+	private TextView tvPrizeUse, tvPrizeInfo, tvPrizeId, tvPrizeAddress,
+			tvPrizePhone, tvPrizeCipher, tvPrizeProvider;
+	private ImageView promote_rate, shareBtn, prizePic;
+	private Prize prize;
+	AsyncImageLoader asyncImageLoader;
+	private static final int CODE_BALANCE = 3;
+	private static final int CODE_DELETE = 4;
+	private static final int CODE_ORDER = 5;
+	
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.prize_detail);
+
+		Intent intent = getIntent();
+		if (intent != null) {
+			prize = (Prize) intent.getSerializableExtra("prize");
+		}
+
+		if (prize == null) {
+			prize = new Prize();
+		}
+		asyncImageLoader = new AsyncImageLoader(this);
+		initView();
+
+	}
+
+	public void initView() {
+
+		// 花几毛钱提高中奖率事件绑定
 		promote_rate = (ImageView) findViewById(R.id.btn_promote_rate);
 		shareBtn = (ImageView) findViewById(R.id.btn_share);
 		leftText = (TextView) findViewById(R.id.btn_left);
 		title = (TextView) findViewById(R.id.tv_center);
 		rightText = (TextView) findViewById(R.id.btn_right);
-		prizePic = (ImageView)findViewById(R.id.prize_pic);
-		if(prize!=null){
-			((TextView)findViewById(R.id.tx_prize_use)).setText("抵用现金附送物品");
-			((TextView)findViewById(R.id.prize_info)).setText(prize.getInfo());
-			((TextView)findViewById(R.id.prize_id)).setText(prize.getNumber());
-			((TextView)findViewById(R.id.prize_address)).setText(prize.getAddress());
-			((TextView)findViewById(R.id.prize_phone)).setText(prize.getPhone());
-			((TextView)findViewById(R.id.prize_cipher)).setText(prize.getCipher());
-			((TextView)findViewById(R.id.prize_date)).setText(prize.getStartDate());
-			((TextView)findViewById(R.id.tx_prize_provider)).setText(prize.getProvider());
+		prizePic = (ImageView) findViewById(R.id.prize_pic);
+		if (prize != null) {
+			((TextView) findViewById(R.id.tx_prize_use)).setText("抵用现金附送物品");
+			((TextView) findViewById(R.id.prize_info)).setText(prize.getInfo());
+			((TextView) findViewById(R.id.prize_id)).setText(prize.getNumber());
+			((TextView) findViewById(R.id.prize_address)).setText(prize
+					.getAddress());
+			((TextView) findViewById(R.id.prize_phone)).setText(prize
+					.getPhone());
+			((TextView) findViewById(R.id.prize_cipher)).setText(prize
+					.getCipher());
+			((TextView) findViewById(R.id.prize_date)).setText(prize
+					.getStartDate());
+			((TextView) findViewById(R.id.tx_prize_provider)).setText(prize
+					.getProvider());
 		}
 		title.setText("领奖啦");
 		leftText.setText("<返回");
@@ -76,14 +89,14 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 		leftText.setOnClickListener(this);
 		promote_rate.setOnClickListener(this);
 		shareBtn.setOnClickListener(this);
-		asyncImageLoader.loadBitmap(prize.getSmallPic(), new ImageCallback() {  
-			public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  
+		asyncImageLoader.loadBitmap(prize.getSmallPic(), new ImageCallback() {
+			public void imageLoaded(Bitmap imageDrawable, String imageUrl) {
 				prizePic.setImageBitmap(imageDrawable);
-			}  
+			}
 		});
 	}
-    
-    @Override
+
+	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 
@@ -99,109 +112,164 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 			startActivity(intent);
 			break;
 		case R.id.btn_promote_rate:
-			promoteRate();
+			// promoteRate();
+			getOrderInfoReuquest();
+			
 			break;
 		}
-		
-	}
-    
-    public void deleteAwardReuquest(){
 
-    	HashMap<String, String> data = new HashMap<String, String>();
-    	String userId = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID,
-				"0");
-    	data.put(SysConstants.USER_ID, userId);
-    	data.put(SysConstants.AWARD_ID, prize.getId());
+	}
+
+	public void deleteAwardReuquest() {
+
+		HashMap<String, String> data = new HashMap<String, String>();
+		String userId = SharedPreferencesHelper.getString(
+				SharedPreferencesKey.USER_ID, "0");
+		data.put(SysConstants.USER_ID, userId);
+		data.put(SysConstants.AWARD_ID, prize.getId());
 		NBRequest nbRequest = new NBRequest();
-		nbRequest.setRequestTag(CODE_DELETE);		
+		nbRequest.setRequestTag(CODE_DELETE);
 		nbRequest.sendRequest(m_handler, SysConstants.DELETE_AWARD_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
-    }
-    
-    @Override
-   	public void parseResponse(NBRequest request) {
-   		// TODO Auto-generated method stub
-       	System.out.println(request.getCode());
-       	if(request.getCode().equals(SysConstants.ZERO)){
+	}
+	public void getOrderInfoReuquest() {
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		String userId = SharedPreferencesHelper.getString(
+				SharedPreferencesKey.USER_ID, "0");
+		//data.put(SysConstants.USER_ID, userId);
+		//data.put(SysConstants.AWARD_ID, prize.getId());
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.setRequestTag(CODE_ORDER);
+		nbRequest.sendRequest(m_handler, SysConstants.ORDER_INFO_URL, null,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+	}
 
-       		switch(request.getRequestTag()){
-       		case CODE_BALANCE:
-       		
-       			break;
-       			
-       		case CODE_DELETE:
-       			Toast.makeText(getApplicationContext(), "刪除成功", Toast.LENGTH_SHORT).show();
-       	        finish();
-       			break;
-       		}
-   	        
-   	        
-       	}else{
-       		Toast.makeText(getApplicationContext(), "请求失败", Toast.LENGTH_SHORT).show();
-       	}
-   	}
-    
-    public void promoteRate(){
-    	
-    	String isLogin = SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,"0");
-    	Float balance = SharedPreferencesHelper.getFloat(SharedPreferencesKey.BALANCE,100);
-    	Float buyRateMinimumRequest = SharedPreferencesHelper.getFloat(SharedPreferencesKey.MINIMUM_REQUEST,120);
-    	
-		if(isLogin.equals("1")){
-			//判断余额
-			if(buyRateMinimumRequest > balance){
-				//当前余额不够支付
+	@Override
+	public void parseResponse(NBRequest request) {
+		// TODO Auto-generated method stub
+		System.out.println(request.getCode());
+		if (request.getCode().equals(SysConstants.ZERO)) {
+			JSONObject jsonObject = request.getBodyJSONObject();
+			switch (request.getRequestTag()) {
+			case CODE_BALANCE:
+
+				break;
+
+			case CODE_DELETE:
+				Toast.makeText(getApplicationContext(), "刪除成功",
+						Toast.LENGTH_SHORT).show();
+				finish();
+				break;
+			case CODE_ORDER:
+				String TN = jsonObject.optString("tn");
+				UPPayAssistEx.startPayByJAR(this, PayActivity.class, null, null,
+						TN, "01");
+				break;
+			}
+
+		} else {
+			Toast.makeText(getApplicationContext(), "请求失败", Toast.LENGTH_SHORT)
+					.show();
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (data == null) {
+			return;
+		}
+		String str = data.getExtras().getString("pay_result");
+		System.out.println(str);
+		if (str.equals("success")) {
+			Toast.makeText(getApplicationContext(), "支付成功", Toast.LENGTH_SHORT)
+			.show();
+		} else if (str.equalsIgnoreCase("fail")) {
+			Toast.makeText(getApplicationContext(), "请求失败", Toast.LENGTH_SHORT)
+			.show();
+		} else if (str.equalsIgnoreCase("cancel")) {
+			Toast.makeText(getApplicationContext(), "您已取消支付", Toast.LENGTH_SHORT)
+			.show();
+		}
+	}
+
+	public void promoteRate() {
+
+		String isLogin = SharedPreferencesHelper.getString(
+				SharedPreferencesKey.IS_LOGIN, "0");
+		Float balance = SharedPreferencesHelper.getFloat(
+				SharedPreferencesKey.BALANCE, 100);
+		Float buyRateMinimumRequest = SharedPreferencesHelper.getFloat(
+				SharedPreferencesKey.MINIMUM_REQUEST, 120);
+
+		if (isLogin.equals("1")) {
+			// 判断余额
+			if (buyRateMinimumRequest > balance) {
+				// 当前余额不够支付
 				AlertDialog alert = new AlertDialog.Builder(this).create();
 				alert.setTitle("余额不足");
 				alert.setMessage("您的账户余额已不足，是否立即充值？");
-				alert.setButton(AlertDialog.BUTTON_NEGATIVE, "不，谢谢", new AlertDialog.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						//关闭对话框
-						dialog.cancel();
-					}
-				});
-				alert.setButton(AlertDialog.BUTTON_POSITIVE, "是", new AlertDialog.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(PrizeDetail.this, RechargeActivity.class);
-						startActivity(intent);
-					}
-				});
-				//显示对话框
+				alert.setButton(AlertDialog.BUTTON_NEGATIVE, "不，谢谢",
+						new AlertDialog.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// 关闭对话框
+								dialog.cancel();
+							}
+						});
+				alert.setButton(AlertDialog.BUTTON_POSITIVE, "是",
+						new AlertDialog.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent intent = new Intent(PrizeDetail.this,
+										RechargeActivity.class);
+								startActivity(intent);
+							}
+						});
+				// 显示对话框
 				alert.show();
-			}else{
-				//提示当前将消费金额
+			} else {
+				// 提示当前将消费金额
 				AlertDialog alert = new AlertDialog.Builder(this).create();
 				alert.setTitle("支付确认");
-				alert.setMessage("将从您余额中扣除 "+buyRateMinimumRequest+" 元，是否继续？");
-				alert.setButton(AlertDialog.BUTTON_NEGATIVE, "取消", new AlertDialog.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						//关闭对话框
-						dialog.cancel();
-					}
-				});
-				alert.setButton(AlertDialog.BUTTON_POSITIVE, "好", new AlertDialog.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						//支付
-						
-					}
-				});
-				//显示对话框
+				alert.setMessage("将从您余额中扣除 " + buyRateMinimumRequest
+						+ " 元，是否继续？");
+				alert.setButton(AlertDialog.BUTTON_NEGATIVE, "取消",
+						new AlertDialog.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// 关闭对话框
+								dialog.cancel();
+							}
+						});
+				alert.setButton(AlertDialog.BUTTON_POSITIVE, "好",
+						new AlertDialog.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// 支付
+
+							}
+						});
+				// 显示对话框
 				alert.show();
 			}
-		}else{
-			//提示登录
-			//Toast.makeText(this, "您尚未登录，请先登录", Toast.LENGTH_SHORT).show();
-			//先将奖品信息存起来
+		} else {
+			// 提示登录
+			// Toast.makeText(this, "您尚未登录，请先登录", Toast.LENGTH_SHORT).show();
+			// 先将奖品信息存起来
 			Intent intent = new Intent(PrizeDetail.this, Login.class);
 			startActivity(intent);
 		}
-    }
+	}
+
 }
