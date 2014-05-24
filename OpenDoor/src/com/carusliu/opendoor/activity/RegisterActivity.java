@@ -2,6 +2,7 @@ package com.carusliu.opendoor.activity;
 
 import java.util.HashMap;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,11 +28,14 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 	private RadioGroup genderRadio;
 	private String gender = "0";
 	private Button registerBtn;
+	private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 		initView();
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setCanceledOnTouchOutside(false);
     }
 
     public void initView() {
@@ -117,7 +121,7 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 		}
     	HashMap<String, String> data = new HashMap<String, String>();
 		data.put(SysConstants.USER_ACCOUNT, userAccount);
-		data.put(SysConstants.USER_PASSWORD, userPwd);
+		data.put(SysConstants.USER_PASSWORD, MD5Util.md5(userPwd));
 		data.put(SysConstants.USER_NAME, userName);
 		data.put(SysConstants.USER_GENDER, gender);
 		data.put(SysConstants.USER_PHONE, userPhone);
@@ -131,6 +135,7 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 	public void parseResponse(NBRequest request) {
 		// TODO Auto-generated method stub
     	System.out.println(request.getCode());
+    	progressDialog.cancel();
     	if(request.getCode().equals(SysConstants.ZERO)){
 	    	//JSONObject jsonObject = request.getBodyJSONObject();
 	    	//System.out.println(jsonObject.toString());
@@ -156,6 +161,8 @@ public class RegisterActivity extends HWActivity implements OnClickListener{
 		case R.id.btn_right:
 			break;
 		case R.id.btn_register:
+			progressDialog.setMessage("ÕýÔÚ×¢²á");
+			progressDialog.show();
 			registerRequest();
 			break;
 		}

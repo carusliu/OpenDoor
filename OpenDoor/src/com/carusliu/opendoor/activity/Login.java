@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +29,7 @@ public class Login extends HWActivity implements OnClickListener{
 	private Button loginBtn, registerBtn;
 	private CheckBox rememberMe;
 	private String from;
+	private ProgressDialog progressDialog;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,8 @@ public class Login extends HWActivity implements OnClickListener{
         
         Intent intent = getIntent();
         from = intent.getStringExtra("from");
-        
+        progressDialog = new ProgressDialog(this);
+		progressDialog.setCanceledOnTouchOutside(false);
         initView();
     }
     public void initView() {
@@ -54,7 +57,7 @@ public class Login extends HWActivity implements OnClickListener{
 		
 		title.setText("µÇÂ¼");
 		leftText.setText("<·µ»Ø");
-		rightText.setText("×¢²á>");
+		//rightText.setText("×¢²á>");
 
 		leftText.setOnClickListener(this);
 		rightText.setOnClickListener(this);
@@ -82,7 +85,7 @@ public class Login extends HWActivity implements OnClickListener{
     	
     	HashMap<String, String> data = new HashMap<String, String>();
 		data.put(SysConstants.USER_ACCOUNT, userName);
-		data.put(SysConstants.USER_PASSWORD, userPwd);
+		data.put(SysConstants.USER_PASSWORD, MD5Util.md5(userPwd));
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.sendRequest(m_handler, SysConstants.LOGIN_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
@@ -92,6 +95,7 @@ public class Login extends HWActivity implements OnClickListener{
 	public void parseResponse(NBRequest request) {
 		// TODO Auto-generated method stub
     	//System.out.println(request.getCode());
+    	progressDialog.cancel();
     	if(request.getCode().equals(SysConstants.ZERO)){
 	    	JSONObject jsonObject = request.getBodyJSONObject();
 	    	//System.out.println(jsonObject.toString());
@@ -139,6 +143,8 @@ public class Login extends HWActivity implements OnClickListener{
 			startActivity(intent);
 			break;
 		case R.id.btn_login:
+			progressDialog.setMessage("ÕýÔÚµÇÂ¼");
+			progressDialog.show();
 			loginRequest();
 			break;
 		}

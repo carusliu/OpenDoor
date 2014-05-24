@@ -57,17 +57,12 @@ public class ShakeActivity extends HWActivity{
 	private Button mDrawerBtn;
 	private AnimationDrawable anim;
 	private ProgressDialog progressDialog;
-	private Prize defaultPrize;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);	
 		setContentView(R.layout.shake_activity);
 		//drawerSet ();//设置  drawer监听    切换 按钮的方向
-		Intent intent = getIntent();
-        if(intent!=null){
-        	defaultPrize = (Prize)intent.getSerializableExtra("prize");
-        }
         
 		mVibrator = (Vibrator)getApplication().getSystemService(VIBRATOR_SERVICE);
 		//ImageView shakeImage = (ImageView)findViewById(R.id.shakeBg);
@@ -100,24 +95,15 @@ public class ShakeActivity extends HWActivity{
 						/*Toast.makeText(getApplicationContext(),
 							     "未摇中任何奖品", 10).show();*/
 							if(isOnline()){
-								
+								progressDialog = new ProgressDialog(ShakeActivity.this);
+								progressDialog.setCanceledOnTouchOutside(false);
+								progressDialog.setMessage("正在获取奖品信息，请稍后...");
+								progressDialog.show();
 								if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
 										"0").equals("0")) {
-									
-									Intent intent = new Intent();
-									intent.putExtra("prize", defaultPrize);
-					            	intent.setClass(ShakeActivity.this, PrizeDetail.class);
-					            	startActivity(intent);
+									sendNormalPrizeRequest();
 								} else {
-									progressDialog = new ProgressDialog(ShakeActivity.this);
-									progressDialog.setCanceledOnTouchOutside(false);
-									progressDialog.setMessage("正在获取奖品信息，请稍后...");
-									if(isOnline()){
-										progressDialog.show();
-										sendPrizeRequest();
-									}else{
-										Toast.makeText(ShakeActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
-									}
+									sendPrizeRequest();
 								}
 							}else{
 								Toast.makeText(ShakeActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
@@ -139,11 +125,15 @@ public class ShakeActivity extends HWActivity{
 		nbRequest.sendRequest(m_handler, SysConstants.SHAKE_AWARD_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
+	public void sendNormalPrizeRequest(){
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.sendRequest(m_handler, SysConstants.SHAKE_NOMAL_AWARD_URL, null,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+	}
 
 	@Override
 	public void parseResponse(NBRequest request) {
 			if (SysConstants.ZERO.equals(request.getCode())) {
-				
 				//解析数据更新界面
 				JSONObject jsonObject = request.getBodyJSONObject();
 				System.out.println(jsonObject.toString());
@@ -159,7 +149,6 @@ public class ShakeActivity extends HWActivity{
 				prize.setStartDate(prizeObj.optString("awardStart")+"至"+prizeObj.optString("awardEnd"));
 				prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
 				prize.setPhone(prizeObj.optString("awardPhone"));
-				//prize.setSmallPic("http://i0.sinaimg.cn/home/2014/0509/U8843P30DT20140509085453.jpg");
 				
 				progressDialog.dismiss();
 				Intent intent = new Intent();

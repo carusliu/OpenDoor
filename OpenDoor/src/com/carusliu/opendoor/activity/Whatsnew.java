@@ -119,7 +119,7 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 		startBtn = (Button)view3.findViewById(R.id.startBtn);
 		
 		title.setText("芝麻开门");
-		leftText.setText("<关于");
+		//leftText.setText("<关于");
 		
 		rightText.setOnClickListener(this);
 		leftText.setOnClickListener(this);
@@ -523,9 +523,6 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 			break;
 		case R.id.startBtn:
 			intent.setClass(Whatsnew.this, ShakeActivity.class);
-			if(prizeList.size()!=0){
-				intent.putExtra("prize", prizeList.get(0));
-			}
 			startActivity(intent);
 			break;
 		}

@@ -32,27 +32,34 @@
 
         <TextView
             android:id="@+id/btn_right"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
             android:layout_width="47dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginBottom="2dp"
             android:layout_marginRight="5dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/img_personal"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:background="@drawable/img_personal" />
+            android:textSize="18sp" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/startBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="120dp"
-        android:background="@drawable/btn_try"
-        android:onClick="startbutton" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="49.5dp"
+        android:background="@drawable/bg_guide_3" >
+
+        <Button
+            android:id="@+id/startBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/btn_try"
+            android:onClick="startbutton" />
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -16,6 +16,7 @@ import com.unionpay.uppay.PayActivity;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -31,13 +32,16 @@ public class RechargeActivity extends HWActivity implements OnClickListener {
 	private Button rechargeBtn;
 	private int money = 1;
 	private View preView ;
-
+	String TN;
+	private ProgressDialog progressDialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recharge);
 
 		initView();
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setCanceledOnTouchOutside(false);
 	}
 
 	public void initView() {
@@ -69,8 +73,16 @@ public class RechargeActivity extends HWActivity implements OnClickListener {
 		HashMap<String, String> data = new HashMap<String, String>();
 		String userId = SharedPreferencesHelper.getString(
 				SharedPreferencesKey.USER_ID, "0");
-		// data.put(SysConstants.USER_ID, userId);
-		// data.put(SysConstants.AWARD_ID, prize.getId());
+	    data.put(SysConstants.USER_ID, userId);
+		data.put(SysConstants.ORDER_AMOUNT, money+"");
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.sendRequest(m_handler, SysConstants.ORDER_INFO_URL, data,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+	}
+	public void updateOrderReuquest() {
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		data.put(SysConstants.TN, TN);
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.sendRequest(m_handler, SysConstants.ORDER_INFO_URL, null,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
@@ -79,11 +91,11 @@ public class RechargeActivity extends HWActivity implements OnClickListener {
 	@Override
 	public void parseResponse(NBRequest request) {
 		// TODO Auto-generated method stub
-		
+		progressDialog.cancel();
 		if (request.getCode().equals(SysConstants.ZERO)) {
 			JSONObject jsonObject = request.getBodyJSONObject();
 
-			String TN = jsonObject.optString("tn");
+			TN = jsonObject.optString("tn");
 			UPPayAssistEx.startPayByJAR(this, PayActivity.class, null, null,
 					TN, "01");
 
@@ -102,9 +114,33 @@ public class RechargeActivity extends HWActivity implements OnClickListener {
 			break;
 		case R.id.btn_immediately_pay:
 			Log.i("OpenDoor", ""+money);
+			progressDialog.setMessage("正在生成订单");
+			progressDialog.show();
 			getOrderInfoReuquest();
 			break;
 
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (data == null) {
+			return;
+		}
+		String str = data.getExtras().getString("pay_result");
+		System.out.println(str);
+		if (str.equals("success")) {
+			updateOrderReuquest();
+			Toast.makeText(getApplicationContext(), "支付成功", Toast.LENGTH_SHORT)
+			.show();
+		} else if (str.equalsIgnoreCase("fail")) {
+			Toast.makeText(getApplicationContext(), "请求失败", Toast.LENGTH_SHORT)
+			.show();
+		} else if (str.equalsIgnoreCase("cancel")) {
+			Toast.makeText(getApplicationContext(), "您已取消支付", Toast.LENGTH_SHORT)
+			.show();
 		}
 	}
 	

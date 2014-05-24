@@ -46,6 +46,7 @@ public class SysConstants {
 	public static final String TODAY_AWARDS_URL = "award/getNearAward";
 	
 	public static final String SHAKE_AWARD_URL = "award/getMotionAward";
+	public static final String SHAKE_NOMAL_AWARD_URL = "award/getNormalMotionAward";
 	
 	public static final String DELETE_AWARD_URL = "user/deleteAward";
 	public static final String MODIFY_PWD_URL = "user/userModifyPassword";
@@ -54,8 +55,10 @@ public class SysConstants {
 	public static final String LOGIN_URL = "user/login";
 	/**用户注册URL*/
 	public static final String REGISTER_URL = "user/userAdd";
-	public static final String ORDER_INFO_URL = "order/getOrderInfo";
-	
+	public static final String ORDER_INFO_URL = "order/getAndroidOrderInfo";
+	public static final String UPDATE_ORDER_URL = "order/updateOrderStatus";
+	public static final String GET_USER_AWARD_URL = "user/getUserAward";
+	public static final String GET_USER_AMOUNT_URL = "user/getUserAmount";
 
 	//请求参数
 	
@@ -70,6 +73,8 @@ public class SysConstants {
 	public static final String LANTITUDE = "lat1";
 	public static final String LONGITUDE = "lng1";
 	public static final String AWARD_ID = "awardId";
+	public static final String ORDER_AMOUNT = "orderAmount";
+	public static final String TN = "tn";
 	
 
 }

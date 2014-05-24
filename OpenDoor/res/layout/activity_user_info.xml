@@ -44,7 +44,7 @@
         android:visibility="gone" >
 
         <com.carusliu.opendoor.view.MyGridView
-            android:id="@+id/grid_super_prize"
+            android:id="@+id/grid_user_prize"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

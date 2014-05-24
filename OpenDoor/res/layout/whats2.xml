@@ -31,6 +31,7 @@
         android:text="最新大奖" />
 
     <LinearLayout
+        android:id="@+id/ll_n_img"
         android:layout_width="fill_parent"
         android:layout_height="65dp"
         android:layout_below="@+id/super_prize_pager"
@@ -92,5 +93,12 @@
                 android:src="@drawable/new_s_3" />
         </LinearLayout>
     </LinearLayout>
-
+ <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_n_img"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/guide_text_2" />
+    
 </RelativeLayout>

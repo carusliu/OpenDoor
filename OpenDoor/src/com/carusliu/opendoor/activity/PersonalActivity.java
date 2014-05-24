@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,26 +19,28 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.carusliu.opendoor.R;
+import com.carusliu.opendoor.adapter.GridAdapter;
 import com.carusliu.opendoor.application.AppApplication;
 import com.carusliu.opendoor.modle.Prize;
 import com.carusliu.opendoor.network.NBRequest;
 import com.carusliu.opendoor.sysconstants.SysConstants;
+import com.carusliu.opendoor.tool.MD5Util;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
 
 public class PersonalActivity extends HWActivity implements OnClickListener{
 	private TextView leftText, title, rightText;
 	private View prizeItem, infoItem, pwdItem, prizeView, infoView, pwdView;
-	private List<Prize> prizeList = new ArrayList<Prize>();
-	private ListView awardlist;
-	private BaseAdapter awardListAdapter;
-	private ImageButton userPhoto;
+	private GridView prizeGridView;
+	private ArrayList<Prize> prizeList;//数据
+	private GridAdapter prizeListAdapter;
 	private TextView tvUserName, tvUserGender, tvUserPhone, tvUserEmail;
 	private EditText etUserName,  etUserPhone, etUserEmail, etOldPwd,etNewPwd,etConfirmPwd;
 	private TextView etUserGender,modifyInfo;
@@ -49,12 +53,19 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 	private String gender = "0";
 	private static final int CODE_MODIFY_INFO = 0;
 	private static final int CODE_MODIFY_PWD = 1;
+	private static final int CODE_GET_AWARD = 2;
+	private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         
         initView();
+        progressDialog = new ProgressDialog(this);
+		progressDialog.setCanceledOnTouchOutside(false);
+		getUserAwardRequest();
+		progressDialog.setMessage("正在获取奖品信息");
+		progressDialog.show();
     }
 
     public void initView() {
@@ -86,6 +97,9 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 		etNewPwd =(EditText)findViewById(R.id.et_new_pwd);
 		etConfirmPwd =(EditText)findViewById(R.id.et_confirm_pwd);
 		modifyPwdBtn = (Button)findViewById(R.id.btn_modify_pwd);
+		
+		prizeGridView = (GridView) findViewById(R.id.grid_user_prize);
+		prizeList = new ArrayList<Prize>();
 		
 		//1.初始化个人信息
 		tvUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
@@ -162,16 +176,28 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 		}
     	
     	HashMap<String, String> data = new HashMap<String, String>();
-    	String userId = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID,
+    	String userAccount = SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ACCOUNT,
 				"0");
-    	data.put(SysConstants.USER_ID, userId);
-    	data.put(SysConstants.USER_PASSWORD, oldPwd);
-    	data.put(SysConstants.NEW_PASSWORD, newPwd);
+    	data.put(SysConstants.USER_ACCOUNT, userAccount);
+    	data.put(SysConstants.USER_PASSWORD, MD5Util.md5(oldPwd));
+    	data.put(SysConstants.NEW_PASSWORD, MD5Util.md5(newPwd));
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.setRequestTag(CODE_MODIFY_PWD);
 		nbRequest.sendRequest(m_handler, SysConstants.MODIFY_PWD_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
     }
+    
+    public void getUserAwardRequest() {
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		String userId = SharedPreferencesHelper.getString(
+				SharedPreferencesKey.USER_ID, "0");
+		data.put(SysConstants.USER_ID, userId);
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.setRequestTag(CODE_GET_AWARD);
+		nbRequest.sendRequest(m_handler, SysConstants.GET_USER_AWARD_URL, data,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+	}
     
     public void showInfoView(){
     	tvUserName.setVisibility(View.VISIBLE);
@@ -216,7 +242,7 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
     @Override
 	public void parseResponse(NBRequest request) {
 		// TODO Auto-generated method stub
-    	System.out.println(request.getCode());
+    	progressDialog.cancel();
     	if(request.getCode().equals(SysConstants.ZERO)){
 	    	/*JSONObject jsonObject = request.getBodyJSONObject();
 	    	System.out.println(jsonObject.toString());*/
@@ -236,14 +262,35 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
     			break;
     			
     		case CODE_MODIFY_PWD:
+    			SharedPreferencesHelper.putString(SharedPreferencesKey.USER_PWD, "");
     			Toast.makeText(getApplicationContext(), "密码修改成功，请重新登录", Toast.LENGTH_SHORT).show();
     			Intent intent = new Intent();
     	        intent.setClass(PersonalActivity.this,Login.class);
     	        startActivity(intent);
     	        finish();
     			break;
+    			
+    		case CODE_GET_AWARD:
+    			JSONObject jsonObject = request.getBodyJSONObject();
+    			JSONArray prizeArray = jsonObject.optJSONArray("userAward");
+				for(int i=0;i<prizeArray.length();i++){
+					JSONObject prizeObj = prizeArray.optJSONObject(i);
+					Prize prize = new Prize();
+					prize.setId(prizeObj.optString("id"));
+					prize.setNumber(prizeObj.optString("awardNumber"));
+					prize.setName(prizeObj.optString(""));
+					prize.setInfo(prizeObj.optString("awardInfo"));
+					prize.setAddress(prizeObj.optString("awardAddress"));
+					prize.setCipher(prizeObj.optString("awardSecret"));
+					prize.setProvider(prizeObj.optString("awardProvide"));
+					prize.setStartDate(prizeObj.optString("awardStart")+"至"+prizeObj.optString("awardEnd"));
+					prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
+					prize.setPhone(prizeObj.optString("awardPhone"));
+				}
+				prizeListAdapter = new GridAdapter(PersonalActivity.this, prizeList,prizeGridView);
+				prizeGridView.setAdapter(prizeListAdapter);
+    			break;
     		}
-	        
 	        
     	}else{
     		Toast.makeText(getApplicationContext(), "修改失败", Toast.LENGTH_SHORT).show();
@@ -310,10 +357,14 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 			}
 			break;
 		case R.id.btn_modify_info:
+			progressDialog.setMessage("正在修改");
+			progressDialog.show();
 			modifyInfoRequest();
 			
 			break;
 		case R.id.btn_modify_pwd:
+			progressDialog.setMessage("正在修改");
+			progressDialog.show();
 			modifyPwdRequest();
 			
 			break;
