@@ -27,10 +27,14 @@ public class Login extends HWActivity implements OnClickListener{
 	private TextView leftText, title, rightText;
 	private Button loginBtn, registerBtn;
 	private CheckBox rememberMe;
+	private String from;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        
+        Intent intent = getIntent();
+        from = intent.getStringExtra("from");
         
         initView();
     }
@@ -107,10 +111,14 @@ public class Login extends HWActivity implements OnClickListener{
 	    	}
 	    	
 	    	SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
-	        Intent intent = new Intent();
-	        intent.setClass(Login.this,PersonalActivity.class);
-	        startActivity(intent);
-	    	
+	    	if("Whatsnew".equals(from)){
+		        Intent intent = new Intent();
+		        intent.setClass(Login.this,PersonalActivity.class);
+		        startActivity(intent);
+	    	}
+	    	if("PrizeDetail".equals(from)){
+	    		//应该将刚摇到的奖品添加到用户奖品池中
+	    	}
 	        Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
 	        finish();
     	}else{

@@ -112,9 +112,7 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 			startActivity(intent);
 			break;
 		case R.id.btn_promote_rate:
-			// promoteRate();
-			getOrderInfoReuquest();
-			
+			promoteRate();
 			break;
 		}
 
@@ -130,18 +128,6 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.setRequestTag(CODE_DELETE);
 		nbRequest.sendRequest(m_handler, SysConstants.DELETE_AWARD_URL, data,
-				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
-	}
-	public void getOrderInfoReuquest() {
-		
-		HashMap<String, String> data = new HashMap<String, String>();
-		String userId = SharedPreferencesHelper.getString(
-				SharedPreferencesKey.USER_ID, "0");
-		//data.put(SysConstants.USER_ID, userId);
-		//data.put(SysConstants.AWARD_ID, prize.getId());
-		NBRequest nbRequest = new NBRequest();
-		nbRequest.setRequestTag(CODE_ORDER);
-		nbRequest.sendRequest(m_handler, SysConstants.ORDER_INFO_URL, null,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
 
@@ -160,11 +146,6 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 				Toast.makeText(getApplicationContext(), "刪除成功",
 						Toast.LENGTH_SHORT).show();
 				finish();
-				break;
-			case CODE_ORDER:
-				String TN = jsonObject.optString("tn");
-				UPPayAssistEx.startPayByJAR(this, PayActivity.class, null, null,
-						TN, "01");
 				break;
 			}
 
@@ -257,7 +238,7 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								// 支付
-
+								
 							}
 						});
 				// 显示对话框
@@ -268,6 +249,7 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 			// Toast.makeText(this, "您尚未登录，请先登录", Toast.LENGTH_SHORT).show();
 			// 先将奖品信息存起来
 			Intent intent = new Intent(PrizeDetail.this, Login.class);
+			intent.putExtra("from", "PrizeDetail");
 			startActivity(intent);
 		}
 	}

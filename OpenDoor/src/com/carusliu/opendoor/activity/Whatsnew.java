@@ -513,7 +513,7 @@ public class Whatsnew extends HWActivity implements OnClickListener {
 		case R.id.btn_right:
 			if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
 					"0").equals("0")) {
-				
+				intent.putExtra("from","Whatsnew");
 				intent.setClass(Whatsnew.this, Login.class);
 			} else {
 				intent.setClass(Whatsnew.this, PersonalActivity.class);
