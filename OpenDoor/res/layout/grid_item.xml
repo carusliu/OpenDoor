@@ -12,11 +12,4 @@
         android:layout_gravity="center_horizontal"
         android:src="@drawable/new_s_1" />
 
-    <TextView
-        android:id="@+id/prize_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="奖品名称" />
-
 </LinearLayout>

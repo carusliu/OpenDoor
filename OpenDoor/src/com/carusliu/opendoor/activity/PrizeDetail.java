@@ -183,6 +183,7 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 			// 判断余额
 			if (0.2 > balance) {
 				// 当前余额不够支付
+				progressDialog.cancel();
 				AlertDialog alert = new AlertDialog.Builder(this).create();
 				alert.setTitle("余额不足");
 				alert.setMessage("您的账户余额已不足，是否立即充值？");

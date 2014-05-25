@@ -30,6 +30,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
@@ -57,6 +58,8 @@ public class ShakeActivity extends HWActivity{
 	private Button mDrawerBtn;
 	private AnimationDrawable anim;
 	private ProgressDialog progressDialog;
+	private static final int CODE_BALANCE = 3;
+	private static final int CODE_GET_AWARD = 4;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -103,7 +106,7 @@ public class ShakeActivity extends HWActivity{
 										"0").equals("0")) {
 									sendNormalPrizeRequest();
 								} else {
-									sendPrizeRequest();
+									getUserBalanceReuquest();
 								}
 							}else{
 								Toast.makeText(ShakeActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
@@ -121,13 +124,26 @@ public class ShakeActivity extends HWActivity{
 		HashMap<String, String> data = new HashMap<String, String>();
 		data.put(SysConstants.USER_ID, SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID, ""));
 		NBRequest nbRequest = new NBRequest();
-		
+		nbRequest.setRequestTag(CODE_GET_AWARD);
 		nbRequest.sendRequest(m_handler, SysConstants.SHAKE_AWARD_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
 	public void sendNormalPrizeRequest(){
 		NBRequest nbRequest = new NBRequest();
+		nbRequest.setRequestTag(CODE_GET_AWARD);
 		nbRequest.sendRequest(m_handler, SysConstants.SHAKE_NOMAL_AWARD_URL, null,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+	}
+	
+	public void getUserBalanceReuquest() {
+		
+		HashMap<String, String> data = new HashMap<String, String>();
+		String userId = SharedPreferencesHelper.getString(
+				SharedPreferencesKey.USER_ID, "0");
+		data.put(SysConstants.USER_ID, userId);
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.setRequestTag(CODE_BALANCE);
+		nbRequest.sendRequest(m_handler, SysConstants.GET_USER_AMOUNT_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
 
@@ -137,24 +153,34 @@ public class ShakeActivity extends HWActivity{
 				//解析数据更新界面
 				JSONObject jsonObject = request.getBodyJSONObject();
 				System.out.println(jsonObject.toString());
-				JSONObject prizeObj = jsonObject.optJSONArray("awardList").optJSONObject(0);
-				Prize prize = new Prize();
-				prize.setId(prizeObj.optString("id"));
-				prize.setNumber(prizeObj.optString("awardNumber"));
-				prize.setName(prizeObj.optString(""));
-				prize.setInfo(prizeObj.optString("awardInfo"));
-				prize.setAddress(prizeObj.optString("awardAddress"));
-				prize.setCipher(prizeObj.optString("awardSecret"));
-				prize.setProvider(prizeObj.optString("awardProvide"));
-				prize.setStartDate(prizeObj.optString("awardStart")+"至"+prizeObj.optString("awardEnd"));
-				prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
-				prize.setPhone(prizeObj.optString("awardPhone"));
+				switch (request.getRequestTag()) {
+				case CODE_BALANCE:
+					double balance = jsonObject.optDouble("resultAmount");
+					promoteRate(balance);
+					break;
+
+				case CODE_GET_AWARD:
+					JSONObject prizeObj = jsonObject.optJSONArray("awardList").optJSONObject(0);
+					Prize prize = new Prize();
+					prize.setId(prizeObj.optString("id"));
+					prize.setNumber(prizeObj.optString("awardNumber"));
+					prize.setName(prizeObj.optString(""));
+					prize.setInfo(prizeObj.optString("awardInfo"));
+					prize.setAddress(prizeObj.optString("awardAddress"));
+					prize.setCipher(prizeObj.optString("awardSecret"));
+					prize.setProvider(prizeObj.optString("awardProvide"));
+					prize.setStartDate(prizeObj.optString("awardStart")+"至"+prizeObj.optString("awardEnd"));
+					prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
+					prize.setPhone(prizeObj.optString("awardPhone"));
+					
+					progressDialog.dismiss();
+					Intent intent = new Intent();
+					intent.putExtra("prize", prize);
+	            	intent.setClass(ShakeActivity.this, PrizeDetail.class);
+	            	startActivity(intent);
+					break;
+				}
 				
-				progressDialog.dismiss();
-				Intent intent = new Intent();
-				intent.putExtra("prize", prize);
-            	intent.setClass(ShakeActivity.this, PrizeDetail.class);
-            	startActivity(intent);
 				
 			}
 	}
@@ -214,32 +240,6 @@ public class ShakeActivity extends HWActivity{
 		}
 	}
 	
-	private void showPrizeDialog() {
-
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("中奖啦")
-                .setMessage("恭喜您摇中了一个奖品！")
-                .setPositiveButton("查看",
-                        new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog,
-                                    int which) {
-                            	Intent intent = new Intent();
-                            	intent.setClass(ShakeActivity.this, PrizeDetail.class);
-                            	startActivity(intent);
-                            }
-
-                        })
-                 .setNegativeButton("取消",
-
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                }).create(); // 创建对话框
-        alertDialog.show(); // 显示对话框
-    }
-	
 	public Location getLocation(){
 		LocationManager loctionManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
@@ -261,4 +261,41 @@ public class ShakeActivity extends HWActivity{
   	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
   	    return (networkInfo != null && networkInfo.isConnected());
   	} 
+	
+	public void promoteRate(double balance) {
+
+			// 判断余额
+			if (0.2 > balance) {
+				// 当前余额不够支付
+				progressDialog.cancel();
+				AlertDialog alert = new AlertDialog.Builder(this).create();
+				alert.setTitle("余额不足");
+				alert.setMessage("您的账户余额已不足，是否立即充值？");
+				alert.setButton(AlertDialog.BUTTON_NEGATIVE, "不，谢谢",
+						new AlertDialog.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// 关闭对话框
+								dialog.cancel();
+							}
+						});
+				alert.setButton(AlertDialog.BUTTON_POSITIVE, "是",
+						new AlertDialog.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent intent = new Intent(ShakeActivity.this,
+										RechargeActivity.class);
+								startActivity(intent);
+							}
+						});
+				// 显示对话框
+				alert.show();
+			} else {
+				sendPrizeRequest();
+			}
+	}
 }

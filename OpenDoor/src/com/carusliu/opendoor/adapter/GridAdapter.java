@@ -61,7 +61,6 @@ public class GridAdapter extends BaseAdapter{
 			//地址
 			viewCache.prizePic = (ImageView) convertView.findViewById(R.id.prize_pic);
 			//评分结果
-			viewCache.prizeName = (TextView) convertView.findViewById(R.id.prize_name);
 			
 			convertView.setTag(viewCache);
 		}else{
@@ -70,7 +69,6 @@ public class GridAdapter extends BaseAdapter{
 		
 		Prize prize = prizeList.get(position);
 		viewCache.prizePic.setTag(prize.getSmallPic());
-		viewCache.prizeName.setText(prize.getName());
 		//异步加载图片
 		Bitmap cachedImage = asyncImageLoader.loadBitmap(prize.getSmallPic(), new ImageCallback() {  
             public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  

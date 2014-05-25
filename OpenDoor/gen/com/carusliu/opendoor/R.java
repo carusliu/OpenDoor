@@ -158,6 +158,7 @@ public final class R {
         public static final int btn_shake=0x7f0a0007;
         public static final int btn_share=0x7f0a001d;
         public static final int chb_login_remember=0x7f0a0055;
+        public static final int dialog_prize_pic=0x7f0a004d;
         public static final int et_confirm_pwd=0x7f0a003b;
         public static final int et_content=0x7f0a001c;
         public static final int et_login_name=0x7f0a0053;
@@ -211,10 +212,9 @@ public final class R {
         public static final int prize_date=0x7f0a0064;
         public static final int prize_id=0x7f0a005e;
         public static final int prize_info=0x7f0a005c;
-        public static final int prize_name=0x7f0a004e;
         public static final int prize_open=0x7f0a001f;
         public static final int prize_phone=0x7f0a0062;
-        public static final int prize_pic=0x7f0a004d;
+        public static final int prize_pic=0x7f0a004e;
         public static final int pwd_open=0x7f0a0034;
         public static final int radio_gender=0x7f0a0017;
         public static final int rb_female=0x7f0a0019;
@@ -278,14 +278,15 @@ public final class R {
         public static final int appstart=0x7f030006;
         public static final int award_list_item=0x7f030007;
         public static final int carguard_activity_top=0x7f030008;
-        public static final int grid_item=0x7f030009;
-        public static final int login=0x7f03000a;
-        public static final int prize_detail=0x7f03000b;
-        public static final int shake_activity=0x7f03000c;
-        public static final int whats1=0x7f03000d;
-        public static final int whats2=0x7f03000e;
-        public static final int whats3=0x7f03000f;
-        public static final int whatsnew_viewpager=0x7f030010;
+        public static final int dialog_prize_detail=0x7f030009;
+        public static final int grid_item=0x7f03000a;
+        public static final int login=0x7f03000b;
+        public static final int prize_detail=0x7f03000c;
+        public static final int shake_activity=0x7f03000d;
+        public static final int whats1=0x7f03000e;
+        public static final int whats2=0x7f03000f;
+        public static final int whats3=0x7f030010;
+        public static final int whatsnew_viewpager=0x7f030011;
     }
     public static final class menu {
         public static final int about=0x7f090000;

@@ -11,7 +11,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -31,9 +33,11 @@ import com.carusliu.opendoor.application.AppApplication;
 import com.carusliu.opendoor.modle.Prize;
 import com.carusliu.opendoor.network.NBRequest;
 import com.carusliu.opendoor.sysconstants.SysConstants;
+import com.carusliu.opendoor.tool.AsyncImageLoader;
 import com.carusliu.opendoor.tool.MD5Util;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
+import com.carusliu.opendoor.tool.AsyncImageLoader.ImageCallback;
 
 public class PersonalActivity extends HWActivity implements OnClickListener{
 	private TextView leftText, title, rightText;
@@ -54,13 +58,20 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 	private static final int CODE_MODIFY_INFO = 0;
 	private static final int CODE_MODIFY_PWD = 1;
 	private static final int CODE_GET_AWARD = 2;
+	private static final int CODE_DELETE = 3;
 	private ProgressDialog progressDialog;
+	private View dialogView;
+	private ImageView dialogImg;
+	AsyncImageLoader asyncImageLoader ;
+	private int prizePosition;
+	AlertDialog alert;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         
         initView();
+        asyncImageLoader = new AsyncImageLoader(this);
         progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
 		getUserAwardRequest();
@@ -98,9 +109,49 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 		etConfirmPwd =(EditText)findViewById(R.id.et_confirm_pwd);
 		modifyPwdBtn = (Button)findViewById(R.id.btn_modify_pwd);
 		
+		dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_prize_detail, null);
+		dialogImg = (ImageView)dialogView.findViewById(R.id.dialog_prize_pic);
 		prizeGridView = (GridView) findViewById(R.id.grid_user_prize);
 		prizeList = new ArrayList<Prize>();
 		
+		alert = new AlertDialog.Builder(PersonalActivity.this).create();
+		alert.setTitle("奖品详情");
+		alert.setView(dialogView);
+		alert.setButton(AlertDialog.BUTTON_NEGATIVE, "取消",
+				new AlertDialog.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						// 关闭对话框
+						dialog.cancel();
+						
+					}
+				});
+		alert.setButton(AlertDialog.BUTTON_POSITIVE, "删除",
+				new AlertDialog.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						deleteAwardReuquest();
+					}
+				});
+		prizeGridView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position,
+					long id) {
+				prizePosition = position;
+				asyncImageLoader.loadBitmap(prizeList.get(position).getSmallPic(), new ImageCallback() {  
+					public void imageLoaded(Bitmap imageDrawable, String imageUrl) {  
+						dialogImg.setImageBitmap(imageDrawable);
+					}  
+				});
+				// 显示对话框
+				alert.show();
+			}
+		});
 		//1.初始化个人信息
 		tvUserName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_NAME, ""));
 		setGender();
@@ -118,6 +169,19 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 		modifyInfoBtn.setOnClickListener(this);
 		modifyPwdBtn.setOnClickListener(this);
 		etUserGender.setOnClickListener(this);
+	}
+    
+    public void deleteAwardReuquest() {
+
+		HashMap<String, String> data = new HashMap<String, String>();
+		String userId = SharedPreferencesHelper.getString(
+				SharedPreferencesKey.USER_ID, "0");
+		data.put(SysConstants.USER_ID, userId);
+		data.put(SysConstants.AWARD_ID, prizeList.get(prizePosition).getId());
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.setRequestTag(CODE_DELETE);
+		nbRequest.sendRequest(m_handler, SysConstants.DELETE_AWARD_URL, data,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
     
     public void modifyInfoRequest(){
@@ -286,14 +350,20 @@ public class PersonalActivity extends HWActivity implements OnClickListener{
 					prize.setStartDate(prizeObj.optString("awardStart")+"至"+prizeObj.optString("awardEnd"));
 					prize.setSmallPic(SysConstants.SERVER+prizeObj.optString("awardImage"));
 					prize.setPhone(prizeObj.optString("awardPhone"));
+					prizeList.add(prize);
 				}
 				prizeListAdapter = new GridAdapter(PersonalActivity.this, prizeList,prizeGridView);
 				prizeGridView.setAdapter(prizeListAdapter);
     			break;
+    			
+    		case CODE_DELETE:
+    			prizeList.remove(prizePosition);
+    			prizeListAdapter.notifyDataSetChanged();
+    			break;
     		}
 	        
     	}else{
-    		Toast.makeText(getApplicationContext(), "修改失败", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(getApplicationContext(), "请求失败", Toast.LENGTH_SHORT).show();
     	}
 	}
     

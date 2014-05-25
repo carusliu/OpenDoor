@@ -115,13 +115,11 @@ public class Login extends HWActivity implements OnClickListener{
 	    	}
 	    	
 	    	SharedPreferencesHelper.putString(SharedPreferencesKey.IS_LOGIN, "1");
-	    	if("Whatsnew".equals(from)){
-		        Intent intent = new Intent();
+	    	
+	    	if(!"PrizeDetail".equals(from)){
+	    		Intent intent = new Intent();
 		        intent.setClass(Login.this,PersonalActivity.class);
 		        startActivity(intent);
-	    	}
-	    	if("PrizeDetail".equals(from)){
-	    		//应该将刚摇到的奖品添加到用户奖品池中
 	    	}
 	        Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
 	        finish();
