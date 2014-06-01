@@ -60,13 +60,17 @@ public class ShakeActivity extends HWActivity{
 	private ProgressDialog progressDialog;
 	private static final int CODE_BALANCE = 3;
 	private static final int CODE_GET_AWARD = 4;
+	private static final int CODE_GET_FREE_AWARD = 5;
+	private int free = 1;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);	
 		setContentView(R.layout.shake_activity);
 		//drawerSet ();//设置  drawer监听    切换 按钮的方向
-        
+		progressDialog = new ProgressDialog(ShakeActivity.this);
+		progressDialog.setCanceledOnTouchOutside(false);
 		mVibrator = (Vibrator)getApplication().getSystemService(VIBRATOR_SERVICE);
 		//ImageView shakeImage = (ImageView)findViewById(R.id.shakeBg);
 		anim = (AnimationDrawable)findViewById(R.id.shakeBg).getBackground();
@@ -98,15 +102,19 @@ public class ShakeActivity extends HWActivity{
 						/*Toast.makeText(getApplicationContext(),
 							     "未摇中任何奖品", 10).show();*/
 							if(isOnline()){
-								progressDialog = new ProgressDialog(ShakeActivity.this);
-								progressDialog.setCanceledOnTouchOutside(false);
+								
 								progressDialog.setMessage("正在获取奖品信息，请稍后...");
 								progressDialog.show();
 								if (SharedPreferencesHelper.getString(SharedPreferencesKey.IS_LOGIN,
 										"0").equals("0")) {
 									sendNormalPrizeRequest();
 								} else {
-									getUserBalanceReuquest();
+									if(free==1){
+										//调用免费摇一摇接口
+										sendFreePrizeRequest();
+									}else{
+										getUserBalanceReuquest();
+									}
 								}
 							}else{
 								Toast.makeText(ShakeActivity.this, "网络不可用", Toast.LENGTH_SHORT).show();
@@ -128,6 +136,16 @@ public class ShakeActivity extends HWActivity{
 		nbRequest.sendRequest(m_handler, SysConstants.SHAKE_AWARD_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
+	
+	public void sendFreePrizeRequest(){
+		HashMap<String, String> data = new HashMap<String, String>();
+		data.put(SysConstants.USER_ID, SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ID, ""));
+		NBRequest nbRequest = new NBRequest();
+		nbRequest.setRequestTag(CODE_GET_FREE_AWARD);
+		nbRequest.sendRequest(m_handler, SysConstants.SHAKE_FREE_AWARD_URL, data,
+				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
+	}
+	
 	public void sendNormalPrizeRequest(){
 		NBRequest nbRequest = new NBRequest();
 		nbRequest.setRequestTag(CODE_GET_AWARD);
@@ -177,7 +195,41 @@ public class ShakeActivity extends HWActivity{
 					Intent intent = new Intent();
 					intent.putExtra("prize", prize);
 	            	intent.setClass(ShakeActivity.this, PrizeDetail.class);
-	            	startActivity(intent);
+	            	startActivityForResult(intent, 0);
+					break;
+				case CODE_GET_FREE_AWARD:
+					String haveFree = jsonObject.optString("isFree");
+					if(haveFree.equals("1")){
+						progressDialog.setMessage("正在获取奖品信息，请稍后...");
+						progressDialog.show();
+						sendPrizeRequest();
+					}else{
+						progressDialog.dismiss();
+						AlertDialog alert = new AlertDialog.Builder(this).create();
+						alert.setTitle("温馨提示");
+						alert.setMessage("您今天的免费摇奖机会已经用完，点击继续会扣除0.2元，请问是否继续？");
+						alert.setButton(AlertDialog.BUTTON_NEGATIVE, "取消",
+								new AlertDialog.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// 关闭对话框
+										dialog.cancel();
+									}
+								});
+						alert.setButton(AlertDialog.BUTTON_POSITIVE, "继续",
+								new AlertDialog.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										getUserBalanceReuquest();
+									}
+								});
+						// 显示对话框
+						alert.show();
+					}
 					break;
 				}
 				
@@ -297,5 +349,18 @@ public class ShakeActivity extends HWActivity{
 			} else {
 				sendPrizeRequest();
 			}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch(resultCode){
+		case 0:
+			free = 1;
+			break;
+		//按下“花两毛钱换换手气”返回
+		case 1:
+			free = 0;
+			break;
+		}
 	}
 }

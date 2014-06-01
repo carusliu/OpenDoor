@@ -43,4 +43,5 @@
     
     <color name="bg_color">#eafae5</color>
     <color name="bg_lead_color">#F6F6F6</color>
+    <color name="orange_color">#ff9600</color>
 </resources>

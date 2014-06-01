@@ -46,6 +46,7 @@ public class SysConstants {
 	public static final String TODAY_AWARDS_URL = "award/getNearAward";
 	
 	public static final String SHAKE_AWARD_URL = "award/getMotionAward";
+	public static final String SHAKE_FREE_AWARD_URL = "user/getFreeUserAward?";
 	public static final String SHAKE_NOMAL_AWARD_URL = "award/getNomalMotionAward";
 	
 	public static final String DELETE_AWARD_URL = "user/deleteAward";

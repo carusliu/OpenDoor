@@ -9,6 +9,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Process;
+import android.view.Display;
+import android.view.WindowManager;
 
 public class AppApplication extends Application {
 	private static Context mContext;
@@ -27,6 +29,7 @@ public class AppApplication extends Application {
 
 	@Override
 	public void onCreate() {
+		
 		mContext = this;
 		super.onCreate();
 		instance = this;
@@ -62,7 +65,7 @@ public class AppApplication extends Application {
 	}
 
 	/*
-	 * ±éÀúËùÓÐActivity²¢finish
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Activityï¿½ï¿½finish
 	 */
 	public void applicationExit() {
 		while (mActivityList.size() > 0) {

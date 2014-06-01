@@ -34,6 +34,8 @@ public class RechargeActivity extends HWActivity implements OnClickListener {
 	private View preView ;
 	String TN;
 	private ProgressDialog progressDialog;
+	private static final int CODE_GET_ORDER = 3;
+	private static final int CODE_UPDATE_ORDER = 4;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -76,6 +78,7 @@ public class RechargeActivity extends HWActivity implements OnClickListener {
 	    data.put(SysConstants.USER_ID, userId);
 		data.put(SysConstants.ORDER_AMOUNT, money+"");
 		NBRequest nbRequest = new NBRequest();
+		nbRequest.setRequestTag(CODE_GET_ORDER);
 		nbRequest.sendRequest(m_handler, SysConstants.ORDER_INFO_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
@@ -84,7 +87,8 @@ public class RechargeActivity extends HWActivity implements OnClickListener {
 		HashMap<String, String> data = new HashMap<String, String>();
 		data.put(SysConstants.TN, TN);
 		NBRequest nbRequest = new NBRequest();
-		nbRequest.sendRequest(m_handler, SysConstants.ORDER_INFO_URL, null,
+		nbRequest.setRequestTag(CODE_UPDATE_ORDER);
+		nbRequest.sendRequest(m_handler, SysConstants.UPDATE_ORDER_URL, data,
 				SysConstants.CONNECT_METHOD_GET, SysConstants.FORMAT_JSON);
 	}
 
@@ -93,11 +97,19 @@ public class RechargeActivity extends HWActivity implements OnClickListener {
 		// TODO Auto-generated method stub
 		progressDialog.cancel();
 		if (request.getCode().equals(SysConstants.ZERO)) {
-			JSONObject jsonObject = request.getBodyJSONObject();
-
-			TN = jsonObject.optString("tn");
-			UPPayAssistEx.startPayByJAR(this, PayActivity.class, null, null,
-					TN, "01");
+			switch(request.getRequestTag()){
+			case CODE_GET_ORDER:
+				JSONObject jsonObject = request.getBodyJSONObject();
+				TN = jsonObject.optString("tn");
+				UPPayAssistEx.startPayByJAR(this, PayActivity.class, null, null,
+						TN, "01");
+				break;
+				
+			case CODE_UPDATE_ORDER:
+				finish();
+				break;
+			}
+			
 
 		} else {
 			Toast.makeText(getApplicationContext(), "«Î«Û ß∞‹", Toast.LENGTH_SHORT)

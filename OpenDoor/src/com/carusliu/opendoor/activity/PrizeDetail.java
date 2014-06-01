@@ -239,7 +239,9 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 				// 显示对话框
 				alert.show();*/
 				Intent intent = new Intent(PrizeDetail.this, ShakeActivity.class);
-				startActivity(intent);
+				intent.putExtra("from", "PrizeDetail");
+				setResult(1, intent);
+				finish();
 			}
 		} else {
 			// 提示登录
