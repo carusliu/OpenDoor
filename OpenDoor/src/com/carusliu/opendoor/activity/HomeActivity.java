@@ -14,6 +14,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -254,4 +257,20 @@ public class HomeActivity extends HWActivity implements OnClickListener {
   	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
   	    return (networkInfo != null && networkInfo.isConnected());
   	} 
+  	
+  	public Location getLocation(){
+		LocationManager loctionManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);//高精度
+		criteria.setAltitudeRequired(false);//不要求海拔
+		criteria.setBearingRequired(false);//不要求方位
+		criteria.setCostAllowed(true);//允许有花费
+		criteria.setPowerRequirement(Criteria.POWER_LOW);//低功耗
+		//从可用的位置提供器中，匹配以上标准的最佳提供器
+		String provider = loctionManager.getBestProvider(criteria, true);
+		Location location  = loctionManager.getLastKnownLocation(provider);
+		
+		return location;
+	}
 }

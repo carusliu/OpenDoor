@@ -50,6 +50,7 @@ public class LoadActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(LoadActivity.this, HomeActivity.class);
 				startActivity(intent);
+				finish();
 			}
 		});
 		

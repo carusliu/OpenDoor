@@ -1,6 +1,8 @@
 package com.carusliu.opendoor.activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import org.json.JSONObject;
 
@@ -8,8 +10,12 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -21,11 +27,9 @@ import com.carusliu.opendoor.modle.Prize;
 import com.carusliu.opendoor.network.NBRequest;
 import com.carusliu.opendoor.sysconstants.SysConstants;
 import com.carusliu.opendoor.tool.AsyncImageLoader;
+import com.carusliu.opendoor.tool.AsyncImageLoader.ImageCallback;
 import com.carusliu.opendoor.tool.SharedPreferencesHelper;
 import com.carusliu.opendoor.tool.SharedPreferencesKey;
-import com.carusliu.opendoor.tool.AsyncImageLoader.ImageCallback;
-import com.unionpay.UPPayAssistEx;
-import com.unionpay.uppay.PayActivity;
 
 public class PrizeDetail extends HWActivity implements OnClickListener {
 
@@ -38,6 +42,7 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 	private static final int CODE_BALANCE = 3;
 	private static final int CODE_DELETE = 4;
 	private ProgressDialog progressDialog;
+	private ArrayList<String> phoneNums;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,8 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 		initView();
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
+		
+		phoneNums = new ArrayList<String>();
 	}
 
 	public void initView() {
@@ -111,8 +118,7 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 			deleteAwardReuquest();
 			break;
 		case R.id.btn_share:
-			Intent intent = new Intent(PrizeDetail.this, ShareActivity.class);
-			startActivity(intent);
+			readContactsTask();
 			break;
 		case R.id.btn_promote_rate:
 			progressDialog.setMessage("正在查询余额");
@@ -251,5 +257,104 @@ public class PrizeDetail extends HWActivity implements OnClickListener {
 			startActivity(intent);
 		}
 	}
+	
+	public void readContactsTask(){
+    	new AsyncTask<Integer, Integer, String>() {
+
+			@Override
+			protected String doInBackground(Integer... params) {
+				// TODO Auto-generated method stub
+				readContacts();
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(String result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
+				progressDialog.cancel();
+				sendMSG();
+			}
+
+			@Override
+			protected void onPreExecute() {
+				// TODO Auto-generated method stub
+				super.onPreExecute();
+				progressDialog.setTitle("读取联系人");
+				progressDialog.setMessage("正在读取通讯录，请稍后。。。");
+				//progressDialog.setProgressStyle(progressDialog.)
+				progressDialog.show();
+				
+			}
+
+		}.execute(null,null,null);
+    }
+    
+    public void readContacts(){
+		Cursor cursor = this.getBaseContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,   
+                null, null, null, null);  
+       int contactIdIndex = 0;  
+       int nameIndex = 0;  
+         
+       if(cursor.getCount() > 0) {  
+           contactIdIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID);  
+           nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);  
+       }  
+       while(cursor.moveToNext()) {  
+           String contactId = cursor.getString(contactIdIndex);  
+           String name = cursor.getString(nameIndex);  
+          // Log.i(TAG, contactId);  
+           //Log.i(TAG, name);  
+             
+            
+            //查找该联系人的phone信息 
+              
+           Cursor phones = this.getBaseContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,   
+                   null,   
+                   ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + contactId,   
+                   null, null);  
+           int phoneIndex = 0;  
+           if(phones.getCount() > 0) {  
+               phoneIndex = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);  
+           }  
+           while(phones.moveToNext()) {  
+               String phoneNumber = phones.getString(phoneIndex);
+               phoneNums.add(phoneNumber);
+               //Log.i(TAG, phoneNumber);  
+           }  
+             
+            
+           /* //查找该联系人的email信息 
+              
+           Cursor emails = this.getBaseContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,   
+                   null,   
+                   ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + contactId,   
+                   null, null);  
+           int emailIndex = 0;  
+           if(emails.getCount() > 0) {  
+               emailIndex = emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);  
+           }  
+           while(phones.moveToNext()) {  
+               String email = emails.getString(emailIndex);  
+               Log.i(TAG, email);  
+           }*/
+           
+           phones.close();
+           //emails.close();
+       }
+       cursor.close();
+	}
+    
+    public void sendMSG(){
+    	int num = new Random().nextInt(phoneNums.size());
+    	
+    	Uri smsToUri = Uri.parse("smsto:"+phoneNums.get(num));  
+    	  
+    	Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);  
+    	  
+    	intent.putExtra("sms_body", "这个应用碉堡了，各类大奖等你拿！");  
+    	  
+    	startActivity(intent);  
+    }
 
 }

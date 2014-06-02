@@ -51,6 +51,7 @@ public class Login extends HWActivity implements OnClickListener{
 		loginBtn = (Button) findViewById(R.id.btn_login);
 		registerBtn = (Button)findViewById(R.id.btn_register);
 		rememberMe = (CheckBox)findViewById(R.id.chb_login_remember);
+		findViewById(R.id.btn_clear).setOnClickListener(this);
 		
 		etName.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_ACCOUNT,""));
 		etPwd.setText(SharedPreferencesHelper.getString(SharedPreferencesKey.USER_PWD,""));
@@ -144,6 +145,10 @@ public class Login extends HWActivity implements OnClickListener{
 			progressDialog.setMessage("ÕýÔÚµÇÂ¼");
 			progressDialog.show();
 			loginRequest();
+			break;
+		case R.id.btn_clear:
+			etName.setText("");
+			etPwd.setText("");
 			break;
 		}
 	}

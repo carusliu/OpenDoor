@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/iv_item_image"    
-        android:layout_width="100dp"
-        android:layout_height="70dp"
+        android:layout_width="80dp"
+        android:layout_height="65dp"
         android:scaleType="fitXY"
         android:layout_margin="5dp"
         android:src="@drawable/new_s_1"
@@ -20,8 +20,9 @@
         android:layout_below="@+id/iv_item_image"    
         android:layout_centerHorizontal="true"    
         android:singleLine="true"    
-        android:textSize="20sp" 
+        android:textSize="12sp" 
         android:textColor="@color/red"
+        android:layout_marginTop="2dp"
         android:text="title" />
  
 

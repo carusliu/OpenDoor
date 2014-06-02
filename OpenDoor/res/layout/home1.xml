@@ -57,12 +57,17 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="5dp"
-                android:scrollbars="@null" >
+                android:scrollbars="@null" 
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/frame_new">
 
                 <LinearLayout
                     android:id="@+id/view_new"
                     android:layout_width="wrap_content"
-                    android:layout_height="110dp"
+                    android:layout_height="100dp"
                     android:orientation="horizontal" >
                 </LinearLayout>
             </HorizontalScrollView>
@@ -77,6 +82,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/orange_color"
+                android:paddingBottom="15dp"
                 android:orientation="vertical" >
 
                 <TextView
@@ -95,12 +101,17 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
-                    android:scrollbars="@null" >
+                    android:scrollbars="@null"
+                    android:paddingLeft="15dp"
+                	android:paddingRight="15dp"
+                	android:paddingTop="10dp"
+                	android:paddingBottom="10dp"
+                    android:background="@drawable/frame_super" >
 
                     <LinearLayout
                         android:id="@+id/view_super"
                         android:layout_width="wrap_content"
-                        android:layout_height="110dp"
+                        android:layout_height="100dp"
                         android:orientation="horizontal" >
                     </LinearLayout>
                 </HorizontalScrollView>
